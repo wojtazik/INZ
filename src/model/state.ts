@@ -40,6 +40,12 @@ export interface IError {
   time: string
 }
 
+export interface IBeakers {
+  capacity: number,
+  current_volume: number
+  valve_open: boolean
+}
+
 export interface IState {
   paints: IPaint[],
   mixer_working: boolean,
@@ -48,4 +54,5 @@ export interface IState {
   mixing_tank: IMixingTank
   errors: IError[],
   process_running: boolean
+  beakers: IBeakers
 }

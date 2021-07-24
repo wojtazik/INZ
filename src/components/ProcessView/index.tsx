@@ -6,9 +6,9 @@ import { selectPaintsIds } from "../../store/selectors/paintsSelectors";
 import ColorTankData from "./ColorTankData";
 import CleaningSubstanceTankData from "./CleaningSubstanceTankData";
 import MixingTankData from "./MixingTankData";
+import BeakersTankData from "./BeakersTankData";
 
 const ProcessView = () => {
-
   const paintsIds = useSelector(selectPaintsIds)
 
   const renderPaintsDataContainers = useCallback(() => {
@@ -21,9 +21,10 @@ const ProcessView = () => {
 
   return (
     <TanksDataGridWrapper>
-      {/* {renderPaintsDataContainers()}
-      <CleaningSubstanceTankData /> */}
+      {renderPaintsDataContainers()}
+      <CleaningSubstanceTankData />
       <MixingTankData />
+      <BeakersTankData />
     </TanksDataGridWrapper>
   )
 }

@@ -1,4 +1,5 @@
 import { combineReducers } from "redux";
+import { beakersReducer } from "./beakersReducer";
 import { choosenColorCodeReducer } from "./choosenColorCodeReducer";
 import { cleaningSubstanceReducer } from "./cleaningSubstanceReducer";
 import { errorsReducer } from "./errorsReducer";
@@ -14,5 +15,6 @@ export default combineReducers({
   choosen_color_code: choosenColorCodeReducer,
   mixing_tank: mixingTankReducer,
   errors: errorsReducer,
-  process_running: processRunningReducer
+  process_running: processRunningReducer,
+  beakers: beakersReducer
 })

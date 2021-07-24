@@ -1,12 +1,11 @@
-import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
+import Tooltip from 'react-tooltip-lite'
 import styled from 'styled-components'
 import { Id } from '../../../model/commonTypes'
-import { IPaint, IState } from '../../../model/state'
-import { setMixerWorking } from '../../../store/actions/setMixerWorking'
-import { selectPaintDataById } from '../../../store/selectors/paintsSelectors'
 import { selectIsProcessRunning } from '../../../store/selectors/processRunningSelectors'
-import colors from '../../../styles/colors'
+import Button, { TooltippedButton } from '../../common/SimpleButton/SimpleButton'
+import { TooltipContent } from '../../common/TooltipContent/TooltipContent'
 import ColorTankDataActionButtons from '../ColorTankDataActionButtons/ColorTankDataActionButtons'
 import TankDataProcessView from '../TankDataProcessView'
 import TankLevelBar from '../TankLevelBar'
@@ -21,6 +20,14 @@ const ColorTankData = ({ id }: IColorTankDataProps) => {
 
   const isProcessRunning = useSelector(selectIsProcessRunning)
 
+  const toggleIsEditMode = () => {
+    onSetIsEditMode(!isEditMode)
+  }
+
+  useEffect(() => {
+    console.log(isEditMode)
+  }, [isEditMode])
+
   return isEditMode && !isProcessRunning ? (
     <ColorTankDataWrapper>edit....</ColorTankDataWrapper>
   ) : (
@@ -28,6 +35,23 @@ const ColorTankData = ({ id }: IColorTankDataProps) => {
       <TankLevelBar id={id} />
       <TankDataProcessView id={id}/>
       <ColorTankDataActionButtons id={id}/>
+      {/* <TooltippedButton position='right'>
+        <Tooltip
+          content={
+            <TooltipContent>Nie możesz edytować trwajacego procesu</TooltipContent>
+          }
+          useHover={isProcessRunning}
+          useDefaultStyles
+        >
+          <Button
+            onClick={!isProcessRunning ? toggleIsEditMode : () => {}}
+            isDisabled={isProcessRunning}
+            id='toggle-mixing-tank-edit'
+          >
+            Edytuj proces
+          </Button>
+        </Tooltip>
+      </TooltippedButton> */}
     </ColorTankDataWrapper>  
   )
 }
@@ -37,8 +61,9 @@ const ColorTankDataWrapper = styled.div`
   border-radius: 5px;
   padding: 10px;
   min-height: 200px;
-  min-width: 245px;
+  min-width: 310px;
   display: flex;
+  position: relative;
 `
 
 
