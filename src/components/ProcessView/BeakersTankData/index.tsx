@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled, { css } from 'styled-components'
+import { useIO } from '../../../context/SocketContext'
 import { setBeakers, setBeakersLevel } from '../../../store/actions/setBeakers'
 import { selectBakersData } from '../../../store/selectors/beakersSelectors'
 import colors from '../../../styles/colors'
@@ -10,6 +11,10 @@ import DefaultIcon from '../../common/DefaultIcon/DefaultIcon'
 
 const BeakersTankData = () => {
   const beakersData = useSelector(selectBakersData)
+
+  const iosocket = useIO()
+
+  console.log('child component ', iosocket)
 
   const dispatch = useDispatch()
 
