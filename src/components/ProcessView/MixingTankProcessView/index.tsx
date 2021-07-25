@@ -1,6 +1,8 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import styled, { css, keyframes } from 'styled-components'
+import { useIO } from '../../../context/SocketContext'
+import { setMixerWorking } from '../../../store/actions/setMixerWorking'
 import { selectMixerWorking } from '../../../store/selectors/commonSelectors'
 import { selectMixingTank } from '../../../store/selectors/mixingTankSelectors'
 import colors from '../../../styles/colors'
@@ -10,6 +12,13 @@ import { ReactComponent as MixerIcon } from './assets/motor.svg'
 const MixingTankProcessView = () => {
   const mixingTank = useSelector(selectMixingTank)
   const mixerWorking = useSelector(selectMixerWorking)
+
+  const ws = useIO()
+  const dispatch = useDispatch()
+
+  const toggleMixerWorking = () => {
+    dispatch(setMixerWorking(!mixerWorking, ws))
+  }
 
   return (
     <TankDataWrapper>
@@ -56,7 +65,7 @@ const MixingTankProcessView = () => {
       </TankDataRow>
 
       <MixerIconWrapper>
-        <MixerIconStyled mixerWorking={mixerWorking} />
+        <MixerIconStyled mixerWorking={mixerWorking} onClick={toggleMixerWorking}/>
       </MixerIconWrapper>
     </TankDataWrapper>
   )

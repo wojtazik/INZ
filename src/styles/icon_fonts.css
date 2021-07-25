@@ -1,0 +1,23 @@
+@font-face {
+    font-family: "icon_fonts";
+    src: url("../assets/icon_fonts/icon_fonts.eot?a98800c89babde823704ad5c547169d7?#iefix") format("embedded-opentype"),
+url("../assets/icon_fonts/icon_fonts.woff2?a98800c89babde823704ad5c547169d7") format("woff2"),
+url("../assets/icon_fonts/icon_fonts.woff?a98800c89babde823704ad5c547169d7") format("woff"),
+url("../assets/icon_fonts/icon_fonts.ttf?a98800c89babde823704ad5c547169d7") format("truetype"),
+url("../assets/icon_fonts/icon_fonts.svg?a98800c89babde823704ad5c547169d7#icon_fonts") format("svg");
+}
+
+i[class^="ico-"]:before, i[class*=" ico-"]:before {
+    font-family: icon_fonts !important;
+    font-style: normal;
+    font-weight: normal !important;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.ico-valve:before {
+    content: "\f101";
+}

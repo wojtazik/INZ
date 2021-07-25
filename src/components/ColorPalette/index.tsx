@@ -38,8 +38,11 @@ const ColorPalette = () => {
                 colorInRgb[colorElement] += 1
             }
         }
+        //@ts-ignore
         rgbColorToGain.red += colorInRgb.r * colors[color].count
+        //@ts-ignore
         rgbColorToGain.green += colorInRgb.g * colors[color].count
+        //@ts-ignore
         rgbColorToGain.blue += colorInRgb.b * colors[color].count
     }
     
@@ -55,16 +58,16 @@ const ColorPalette = () => {
       ...colors,
       [key]: {
         ...colors[key],
+        //@ts-ignore
         count: colors[key].count + 1
       }
     }
 
     const colorsSummaryCount = getColorsSummaryCount(newColors)
-    console.log(colorsSummaryCount)
     for (const color in newColors) {
+      //@ts-ignore
       newColors[color].percent = newColors[color].count / colorsSummaryCount
     }
-    console.log(newColors)
     setColors(newColors)
   }
 
@@ -73,6 +76,7 @@ const ColorPalette = () => {
       ...colors,
       [key]: {
         ...colors[key],
+        //@ts-ignore
         count: colors[key].count > 0 ? colors[key].count - 1 : 0
       }
     }
@@ -80,6 +84,7 @@ const ColorPalette = () => {
     const colorsSummaryCount = getColorsSummaryCount(newColors)
 
     for (const color in newColors) {
+      //@ts-ignore
       newColors[color].percent = colors[color].count / colorsSummaryCount
     }
 
@@ -93,7 +98,9 @@ const ColorPalette = () => {
           <div className="colors-palette__option-view" style={{background: `#${colors[key].code}`}}>
             <span className="colors-palette__option-code" style={{color: key === 'black' ? 'white' : 'black'}}>{'#' + colors[key].code}</span>
           </div>
+          {/* @ts-ignore */}
           <span>Count: {colors[key].count}</span>
+          {/* @ts-ignore */}
           <span>Percent: {(colors[key].percent * 100).toFixed(1)} %</span>
 
           <div className='colors-palette__buttons-wrapper'>
@@ -107,7 +114,6 @@ const ColorPalette = () => {
 
   useEffect(() => {
     const colorToSet = calculateExpectedColor()
-    console.log(colorToSet)
     if (colorToSet) {
       setGainedColor(colorToSet)
     }

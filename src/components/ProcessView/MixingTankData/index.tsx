@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { selectMixingTank } from '../../../store/selectors/mixingTankSelectors'
@@ -8,35 +8,58 @@ import fonts from '../../../styles/fonts'
 import MixingTankProcessView from '../MixingTankProcessView'
 import TankLevelBar from '../TankLevelBar'
 import Tooltip from 'react-tooltip-lite'
+import { IInputError } from '../../../model/commonTypes'
+import validate from './validate'
+import { TooltipContent } from '../../common/TooltipContent/TooltipContent'
+import Button, { TooltippedButton } from '../../common/SimpleButton/SimpleButton'
 
 const MixingTankData = () => {
   const isProcessRunning = useSelector(selectIsProcessRunning)
   const mixingTank = useSelector(selectMixingTank)
   const [isEditMode, onSetIsEditMode] = useState(false)
   const [localVolumeToGain, onSetLocalVolumeToGain] = useState(mixingTank.volume_to_gain)
+  const [errors, setErrors] = useState<IInputError[]>([])
+
+  const tooltipRef = useRef<Tooltip>(null)
 
   const toggleIsEditMode = () => {
     onSetIsEditMode(!isEditMode)
   }
 
-  const checkForm = () => {
-    if (localVolumeToGain < 0 || localVolumeToGain > mixingTank.capacity) {
-      return 'Objętość poza zakresem'
-    }
+  useEffect(() => {
+    const currentErrors = validate({
+      localVolumeToGain,
+      mixingTank
+    })
     
-    return false
-  }
+    setErrors(currentErrors)
 
-  return isEditMode && !isProcessRunning ? (
+    if (currentErrors.length === 0) {
+      // @ts-ignore
+      tooltipRef.current?.hideTip()
+    }
+  }, [localVolumeToGain, mixingTank])
+
+
+  const renderTooltipErrors = useCallback(() => (
+    <TooltipContent>
+      {errors.map((error: IInputError) => (
+        <li>[{error.field}] {error.message}</li>
+      ))}
+    </TooltipContent>
+  ), [errors])
+
+  const renderEditMode = () => (
     <MixingTankWrapper>
       <TankLevelBar id={mixingTank.id} />
       <TooltippedButton>
         <Tooltip
-          content={checkForm() && <TooltipContent>{checkForm()}</TooltipContent>}
+          ref={tooltipRef}
+          content={errors.length > 0 && renderTooltipErrors()}
           useDefaultStyles
-          useHover={Boolean(checkForm())}
+          useHover={errors.length > 0}
         >
-          <EditButton onClick={toggleIsEditMode} disabled={!checkForm()}>Zapisz</EditButton>
+          <Button onClick={toggleIsEditMode} disabled={errors.length > 0}>Zapisz</Button>
         </Tooltip>
       </TooltippedButton>
       <FormInputsWrapper>
@@ -52,7 +75,9 @@ const MixingTankData = () => {
         </Row>
       </FormInputsWrapper>
     </MixingTankWrapper>
-  ) : (
+  )
+
+  const renderProcessInfo = () => (
     <MixingTankWrapper>
       <TankLevelBar id={mixingTank.id} />
       <MixingTankProcessView />
@@ -64,17 +89,25 @@ const MixingTankData = () => {
           useHover={isProcessRunning}
           useDefaultStyles
         >
-          <EditButton
-            onClick={toggleIsEditMode}
-            disabled={isProcessRunning}
-            id='toggle-mixing-tank-edit'
-          >
-            Edytuj proces
-          </EditButton>
+          <div>
+            <Button
+              onClick={!isProcessRunning ? toggleIsEditMode : () => {}}
+              isDisabled={isProcessRunning}
+              id='toggle-mixing-tank-edit'
+            >
+              Edytuj proces
+            </Button>
+          </div>
+
         </Tooltip>
       </TooltippedButton>
-      
     </MixingTankWrapper>
+  )
+
+  return isEditMode && !isProcessRunning ? (
+    renderEditMode()
+  ) : (
+    renderProcessInfo()
   )
 }
 
@@ -86,35 +119,6 @@ const MixingTankWrapper = styled.div`
   min-width: 310px;
   display: flex;
   position: relative;
-`
-
-const TooltippedButton = styled.div`
-  position: absolute;
-  bottom: 15px;
-  left: 50%;
-  transform: translateX(-50%);
-`
-
-const EditButton = styled.button`
-
-  cursor: pointer;
-  border: 1px solid ${colors.BLACK};
-  background: transparent;
-  outline: none;
-  padding: 5px 8px;
-  border-radius: 3px;
-  transition: all .3s;
-
-  &:hover,
-  &:visited,
-  &:active,
-  &:focus {
-    outline: none;
-  }
-
-  &:hover {
-    background: rgba(0,0,0,.1);
-  }
 `
 
 const Row = styled.div`
@@ -141,10 +145,6 @@ const Label = styled.label`
   display: block;
   font-size: ${fonts.FONT_SMALL_SIZE};
   margin-bottom: 1px;
-`
-
-const TooltipContent = styled.span`
-  font-size: ${fonts.FONT_SMALL_SIZE}
 `
 
 const FormInputsWrapper = styled.form``

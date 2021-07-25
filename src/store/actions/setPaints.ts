@@ -15,3 +15,8 @@ export const setPaintValveState = (payload: Partial<IPaint>): ISetPaintValveStat
   type: SET_PAINT_VALVE_STATE,
   payload
 })
+
+export const pushPaint = (payload: Partial<IPaint>): ISetPaint => ({
+  type: SET_PAINT,
+  payload
+})
