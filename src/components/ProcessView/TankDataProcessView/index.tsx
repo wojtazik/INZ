@@ -42,7 +42,7 @@ const TankDataProcessView = ({ id }: ITankDataProcessView) => {
       <TankDataRow>
         <TankDataKey>Obecnie[L]: </TankDataKey>
         <TankDataValue>
-          {paintTankData.current_volume_liters} L
+          {paintTankData.current_volume} L
         </TankDataValue>
       </TankDataRow>
 

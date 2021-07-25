@@ -37,7 +37,6 @@ const MixingTankData = () => {
     if (currentErrors.length === 0) {
       // @ts-ignore
       tooltipRef.current?.hideTip()
-      console.log()
     }
   }, [localVolumeToGain, mixingTank])
 
@@ -49,8 +48,6 @@ const MixingTankData = () => {
       ))}
     </TooltipContent>
   ), [errors])
-
-  console.log(errors)
 
   const renderEditMode = () => (
     <MixingTankWrapper>

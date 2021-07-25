@@ -23,7 +23,9 @@ export const paintsReducer = (state: IPaint[] = initialPaints, action: ISetPaint
   switch (action.type) {
     case SET_PAINT: 
       state = state.map((paint: IPaint) => {
-        return paint.id === (action.payload as IPaint).id ? action.payload as IPaint : paint
+        return (paint.id === (action.payload as IPaint).id || paint.name === (action.payload as Partial<IPaint>).name ) 
+          ? {...paint, ...action.payload} as IPaint
+          : paint
       })
 
       return state

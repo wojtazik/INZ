@@ -12,10 +12,6 @@ import DefaultIcon from '../../common/DefaultIcon/DefaultIcon'
 const BeakersTankData = () => {
   const beakersData = useSelector(selectBakersData)
 
-  const iosocket = useIO()
-
-  console.log('child component ', iosocket)
-
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -26,7 +22,6 @@ const BeakersTankData = () => {
     dispatch(setBeakers({ valve_open: !beakersData.valve_open }))
   }
 
-  console.log(beakersData)
 
   return (
     <BeakersTankDataWrapper>

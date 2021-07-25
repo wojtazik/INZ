@@ -35,6 +35,7 @@ const ColorTankData = ({ id }: IColorTankDataProps) => {
       <TankLevelBar id={id} />
       <TankDataProcessView id={id}/>
       <ColorTankDataActionButtons id={id}/>
+      {/* We have decidet, that we don't need it for now */}
       {/* <TooltippedButton position='right'>
         <Tooltip
           content={

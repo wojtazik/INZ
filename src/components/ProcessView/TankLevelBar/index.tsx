@@ -14,12 +14,8 @@ export type ITankLevelBar = {
 }
 
 const TankLevelBar: React.FC<ITankLevelBar> = ({ id, isCleaningSubstance }: ITankLevelBar) => {
-
   const tankLevelData = useSelector((state: IState) => selectTankCurrentVolumeData(state, { id, isCleaningSubstance }))
-  console.log(tankLevelData)
-  if (isCleaningSubstance) {
-    console.log(tankLevelData)
-  }
+
   return (
     <>
       <TankLevelBarWrapper>

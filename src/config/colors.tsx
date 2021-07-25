@@ -2,7 +2,7 @@
 export const PAINT_MIN_LEVEL = true
 export const PAINT_MAX_LEVEL = false
 export const PAINT_INITIAL_COUNT = 0
-export const PAINT_TANK_CAPACITY = 300
+export const PAINT_TANK_CAPACITY = 1000
 
 export type ColorsInterface = {
     [key: string]: ConfigColorInterface

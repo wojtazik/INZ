@@ -7,7 +7,7 @@ export interface ISetPaints {
 
 export interface ISetPaint {
   type: string,
-  payload: IPaint
+  payload: IPaint|Partial<IPaint>
 }
 
 export interface ISetMixerWorking {

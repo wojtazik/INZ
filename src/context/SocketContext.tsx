@@ -1,5 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from 'react'
+import { useDispatch } from 'react-redux';
 import socketio from "socket.io-client";
+import processData from '../util/processData';
 
 const SocketContext = React.createContext(null)
 
@@ -18,6 +20,7 @@ function ContextProvider({
   children: React.ReactNode
 }) {
   let [io, setIo] = useState(null)
+  const dispatch = useDispatch()
 
   useEffect(() => {
     (async () => {
@@ -32,6 +35,13 @@ function ContextProvider({
       // @ts-ignore
       io.on('connection', () => {
         console.info(`Connected with websocket on: ${'ws://localhost:3001'}`)
+      })
+
+      //@ts-ignore
+      io.on('refresh.data', (resp) => {
+        if (resp.success) {
+          processData(dispatch, resp)
+        }
       })
     }
   }, [io])

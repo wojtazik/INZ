@@ -24,7 +24,6 @@ const ColorTankDataActionButtons = ({ id }: IColorTankDataActionButtonsProps) =>
   const valveTooltipRef = useRef<Tooltip>(null)
   const refillTooltipRef = useRef<Tooltip>(null)
 
-  console.log('IPR', 'is process running', isProcessRunning)
   const onToggleValve = () => {
     dispatch(setPaintValveState({
       id,
@@ -33,7 +32,6 @@ const ColorTankDataActionButtons = ({ id }: IColorTankDataActionButtonsProps) =>
   }
 
   const onRefillTank = () => {
-    console.log('tank refill')
   }
 
   useEffect(() => {
