@@ -21,9 +21,14 @@ const selectPaintsIds = (state: IState) => {
   }, [])
 }
 
+const selectPaints = (state: IState) => {
+  return state.paints
+}
+
 export {
   selectPaintTanksCount,
   selectPaintsColorCodes,
   selectPaintsIds,
-  selectPaintDataById
+  selectPaintDataById,
+  selectPaints
 }

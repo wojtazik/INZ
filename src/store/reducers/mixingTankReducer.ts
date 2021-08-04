@@ -9,7 +9,7 @@ const initialMixingTank: IMixingTank = {
   mixing_time_seconds: 0,
   mixing_time_seconds_remaining: 0,
   valve_open: false,
-  volume_to_gain: 0
+  volume_to_gain: 100
 }
 
 export const mixingTankReducer = (state: IMixingTank = initialMixingTank, action: ISetMixingTank) => {
