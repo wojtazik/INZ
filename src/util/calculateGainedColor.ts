@@ -20,12 +20,6 @@ function calculateGainedColor(colors: ColorKeyValue) {
   for (const color of flatColorsArray) {
     const colorInRgb = Color.fromHex('#' + color.code).toRGB()
 
-    for (const colorElement in colorInRgb) {
-      if (colorInRgb[colorElement] === 255 && colorsSummaryCount > 1) {
-          colorInRgb[colorElement] += 1
-      }
-    }
-
     rgbColorToGain.red += colorInRgb.r * color.count
     rgbColorToGain.green += colorInRgb.g * color.count
     rgbColorToGain.blue += colorInRgb.b * color.count

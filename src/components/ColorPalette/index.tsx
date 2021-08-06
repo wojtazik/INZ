@@ -14,6 +14,8 @@ import calculateGainedColor from '../../util/calculateGainedColor'
 import { selectIsProcessRunning } from '../../store/selectors/processRunningSelectors'
 import { setPaints } from '../../store/actions/setPaints'
 import { setChoosenColorCode } from '../../store/actions/setChoosenColorCode'
+import { useIO } from '../../context/SocketContext'
+import { setColorsListModalOpen } from '../../store/actions/setModalsOpen'
 
 export type ColorKeyValue = {
   [key: string]: IPaint
@@ -31,6 +33,7 @@ const ColorPalette = () => {
   ), {}))
 
   const dispatch = useDispatch()
+  const socket = useIO()
 
   const isBright = () => {
     if (!gainedColor) {
@@ -81,7 +84,6 @@ const ColorPalette = () => {
 
     calculateLocalColors(updatedLocalColors)
     setGainedColor(calculateGainedColor(updatedLocalColors))
-     
   }
 
   const onRemoveColor = (key: string) => {
@@ -101,10 +103,13 @@ const ColorPalette = () => {
 
   const onSaveConfiguration = () => {
     if (!processRunning) {
-      dispatch(setPaints(Object.values(localColors)))
-      dispatch(setChoosenColorCode(gainedColor))
-
+      dispatch(setPaints(Object.values(localColors), socket))
+      dispatch(setChoosenColorCode(gainedColor, socket))
     }
+  }
+
+  const onOpenColorsListModal = () => {
+    dispatch(setColorsListModalOpen(true))
   }
 
   useEffect(() => {
@@ -146,7 +151,7 @@ const ColorPalette = () => {
         opisującą procentowy udział koloru w barwie wynikowej. Aby ustawić wymagany litraż, przejdź do pierwszej zakładki.
       </ComponentWrapperHint>
       <ColorPaletteWrapper>
-        <GainedColor colorCode={gainedColor} isBright={isBright()}>
+        <GainedColor colorCode={gainedColor} isBright={isBright()} onClick={onOpenColorsListModal}>
           <SaveButton isDisabled={processRunning} onClick={onSaveConfiguration}>Zapisz</SaveButton>
           <GainedColorCode isDark={isDark()}>
             {gainedColor || 'Nie wybrano'}
@@ -199,6 +204,7 @@ const GainedColor = styled.div<GainedColorProps>`
   margin-left: auto;
   margin-right: auto;
   position: relative;
+  cursor: pointer;
   border: 1px solid transparent;
   background: ${({ colorCode }) => colorCode};
   ${({ isBright }) => isBright && css`
