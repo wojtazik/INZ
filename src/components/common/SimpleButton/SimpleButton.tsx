@@ -14,7 +14,7 @@ const Button = styled.button<IButtonProps>`
   border: 1px solid ${colors.GRAY_BASIC_DARK};
   cursor: pointer;
   transition: all .3s;
-  min-width: 80px;
+  min-width: 100px;
 
   &:hover,
   &:active,

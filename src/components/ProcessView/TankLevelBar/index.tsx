@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { Id } from "../../../model/commonTypes";
 import { IState } from "../../../model/state";
+import { selectChoosenColorCode } from "../../../store/selectors/choosenColorCodeSelectors";
 import { selectTankCurrentVolumeData } from "../../../store/selectors/commonSelectors";
 import colors from "../../../styles/colors";
 import fonts from "../../../styles/fonts";
@@ -11,15 +12,19 @@ import { cellSize } from "../../../styles/spacings";
 export type ITankLevelBar = {
   id: Id,
   isCleaningSubstance?: boolean,
+  isMixingTank?: boolean
 }
 
-const TankLevelBar: React.FC<ITankLevelBar> = ({ id, isCleaningSubstance }: ITankLevelBar) => {
+const TankLevelBar: React.FC<ITankLevelBar> = ({ id, isCleaningSubstance, isMixingTank }: ITankLevelBar) => {
   const tankLevelData = useSelector((state: IState) => selectTankCurrentVolumeData(state, { id, isCleaningSubstance }))
+  const colorToGain = useSelector(selectChoosenColorCode) || '#000000'
+  
 
+  console.log(tankLevelData, isMixingTank, colorToGain)
   return (
     <>
       <TankLevelBarWrapper>
-        <TankCurrentLevel colorCode={tankLevelData.color} currentHeight={tankLevelData.current_volume_percent} />
+        <TankCurrentLevel colorCode={isMixingTank ? colorToGain : tankLevelData.color} currentHeight={tankLevelData.current_volume_percent} />
       </TankLevelBarWrapper>
       <TankLevelData>
         <span>{tankLevelData.capacity} L</span>
@@ -30,7 +35,8 @@ const TankLevelBar: React.FC<ITankLevelBar> = ({ id, isCleaningSubstance }: ITan
 }
 
 TankLevelBar.defaultProps = {
-  isCleaningSubstance: false
+  isCleaningSubstance: false,
+  isMixingTank: false
 }
 
 const TankLevelBarWrapper = styled.div`

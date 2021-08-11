@@ -20,6 +20,21 @@ export interface ISetCleaningSubstance {
   payload: ICleaningSubstance
 }
 
+export interface ISetPartialCleaningSubstance {
+  type: string,
+  payload: Partial<ICleaningSubstance>
+}
+
+export interface ISetCleaningSubstanceValveOpen {
+  type: string,
+  payload: boolean
+}
+
+export interface ISetCleaningSubstanceRefill {
+  type: string,
+  payload: boolean
+}
+
 export interface ISetChoosenColorCode {
   type: string,
   payload: string
@@ -27,7 +42,12 @@ export interface ISetChoosenColorCode {
 
 export interface ISetMixingTank {
   type: string,
-  payload: IMixingTank
+  payload: Partial<IMixingTank>
+}
+
+export interface ISetPartialMixingTank {
+  type: string,
+  payload: Partial<IMixingTank>
 }
 
 export interface ISetErrors {
@@ -60,13 +80,36 @@ export interface ISetModalOpen {
   payload: boolean
 }
 
+export interface ISetPaintRefilling {
+  type: string,
+  payload: {
+    id: string,
+    refilling: boolean,
+  }
+}
+
+export interface ISetPaintsRefilling {
+  type: string
+}
+
 export const SET_PAINTS = 'SET_PAINTS'
 export const SET_PAINT = 'SET_PAINT'
 export const SET_PAINT_VALVE_STATE = 'SET_PAINT_VALVE_STATE'
 export const SET_MIXER_WORKING = 'SET_MIXER_WORKING'
+export const SET_PAINT_REFILLING = 'SET_PAINT_REFILLING'
+export const SET_PAINTS_REFILLING = 'SET_PAINTS_REFILLING'
+
+
 export const SET_CLEANING_SUBSTANCE = 'SET_CLEANING_SUBSTANCE'
+export const SET_PARTIAL_CLEANING_SUBSTANCE = 'SET_PARTIAL_CLEANING_SUBSTANCE'
+
+export const SET_CLEANING_SUBSTANCE_VALVE_OPEN = 'SET_CLEANING_SUBSTANCE_VALVE_OPEN'
+export const SET_CLEANING_SUBSTANCE_REFILL = 'SET_CLEANING_SUBSTANCE_REFILL'
+
 export const SET_CHOOSEN_COLOR_CODE = 'SET_CHOOSEN_COLOR_CODE'
 export const SET_MIXING_TANK = 'SET_MIXING_TANK'
+export const SET_PARTIAL_MIXING_TANK = 'SET_PARTIAL_MIXING_TANK'
+
 export const SET_ERRORS = 'SET_ERRORS'
 export const SET_PROCESS_RUNNING = 'SET_PROCESS_RUNNING'
 

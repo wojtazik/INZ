@@ -1,6 +1,7 @@
 import { IMixingTank } from "../../model/state";
-import { ISetMixingTank, SET_MIXING_TANK } from "../actions/actionType";
+import { ISetMixingTank, ISetPartialMixingTank, SET_MIXING_TANK, SET_PARTIAL_MIXING_TANK } from "../actions/actionType";
 import { v4 as uuidv4 } from 'uuid';
+import { reduce } from "lodash";
 
 const initialMixingTank: IMixingTank = {
   id: uuidv4(),
@@ -9,13 +10,26 @@ const initialMixingTank: IMixingTank = {
   mixing_time_seconds: 0,
   mixing_time_seconds_remaining: 0,
   valve_open: false,
-  volume_to_gain: 100
+  volume_to_gain: 0
 }
 
-export const mixingTankReducer = (state: IMixingTank = initialMixingTank, action: ISetMixingTank) => {
+export const mixingTankReducer = (state: IMixingTank = initialMixingTank, action: ISetMixingTank | ISetPartialMixingTank) => {
+  console.log(action.type)
   switch (action.type) {
     case SET_MIXING_TANK:
-      return action.payload
+      return {
+        ...state,
+        ...action.payload
+      }
+    case SET_PARTIAL_MIXING_TANK:
+      console.log({
+        ...state,
+        ...action.payload
+      })
+      return {
+        ...state,
+        ...action.payload
+      }
     default:
       return state
   }

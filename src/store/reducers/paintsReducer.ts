@@ -1,7 +1,8 @@
 import colors, { ConfigColorInterface, PAINT_INITIAL_COUNT, PAINT_MAX_LEVEL, PAINT_MIN_LEVEL, PAINT_TANK_CAPACITY } from "../../config/colors";
 import { IPaint } from "../../model/state";
-import { ISetPaint, ISetPaints, SET_PAINT, SET_PAINTS, SET_PAINT_VALVE_STATE } from "../actions/actionType";
+import { ISetPaint, ISetPaints, SET_PAINT, SET_PAINTS, SET_PAINT_REFILLING, SET_PAINT_VALVE_STATE } from "../actions/actionType";
 import { v4 as uuidv4 } from 'uuid';
+import { RefillingPayload } from "../actions/setPaints";
 
 const initialPaints: IPaint[] = Object.values(colors).map((color: ConfigColorInterface): IPaint => ({
   code: color.code,
@@ -15,7 +16,8 @@ const initialPaints: IPaint[] = Object.values(colors).map((color: ConfigColorInt
   valve_open: false,
   id: uuidv4(),
   name: color.name,
-  ratio: 0
+  ratio: 0,
+  refill: false
 }))
 
 
@@ -50,6 +52,13 @@ export const paintsReducer = (state: IPaint[] = initialPaints, action: ISetPaint
         ...paint
       }))
       
+    case SET_PAINT_REFILLING:
+      return state.map((paint: IPaint) => {
+        return paint.name === (action.payload as RefillingPayload).name ? {
+          ...paint,
+          refilling: (action.payload as RefillingPayload).refilling
+        } : paint
+      })
     default:
       return state
   }

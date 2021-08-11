@@ -24,10 +24,6 @@ const ColorTankData = ({ id }: IColorTankDataProps) => {
     onSetIsEditMode(!isEditMode)
   }
 
-  useEffect(() => {
-    console.log(isEditMode)
-  }, [isEditMode])
-
   return isEditMode && !isProcessRunning ? (
     <ColorTankDataWrapper>edit....</ColorTankDataWrapper>
   ) : (
