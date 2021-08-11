@@ -2,7 +2,7 @@ import { IBeakers, ICleaningSubstance, IError, IMixingTank, IPaint } from "../..
 
 export interface ISetPaints {
   type: string,
-  payload: IPaint[]
+  payload: IPaint[] | Partial<IPaint>[]
 }
 
 export interface ISetPaint {
@@ -55,6 +55,11 @@ export interface ISetBeakersLevel {
   payload: number
 }
 
+export interface ISetModalOpen {
+  type: string,
+  payload: boolean
+}
+
 export const SET_PAINTS = 'SET_PAINTS'
 export const SET_PAINT = 'SET_PAINT'
 export const SET_PAINT_VALVE_STATE = 'SET_PAINT_VALVE_STATE'
@@ -67,3 +72,5 @@ export const SET_PROCESS_RUNNING = 'SET_PROCESS_RUNNING'
 
 export const SET_BEAKERS = 'SET_BEAKERS'
 export const SET_BEAKERS_LEVEL = 'SET_BEAKERS_LEVEL'
+
+export const SET_COLORS_LIST_MODAL_OPEN = 'SET_COLORS_LIST_MODAL_OPEN'

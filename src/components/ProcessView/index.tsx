@@ -7,6 +7,7 @@ import ColorTankData from "./ColorTankData";
 import CleaningSubstanceTankData from "./CleaningSubstanceTankData";
 import MixingTankData from "./MixingTankData";
 import BeakersTankData from "./BeakersTankData";
+import ProcessData from "./ProcessData/ProcessData";
 
 const ProcessView = () => {
   const paintsIds = useSelector(selectPaintsIds)
@@ -24,7 +25,7 @@ const ProcessView = () => {
       {renderPaintsDataContainers()}
       <CleaningSubstanceTankData />
       <MixingTankData />
-      <BeakersTankData />
+      <ProcessData />
     </TanksDataGridWrapper>
   )
 }
