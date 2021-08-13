@@ -98,6 +98,7 @@ const TankDataValue = styled.span`
   font-size: ${fonts.FONT_SMALL_SIZE};
   display: flex;
   align-items: center;
+  white-space: nowrap;
 `
 
 const MixerIconWrapper = styled.div`

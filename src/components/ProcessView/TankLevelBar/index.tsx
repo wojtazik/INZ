@@ -3,23 +3,55 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { Id } from "../../../model/commonTypes";
 import { IState } from "../../../model/state";
+import { selectChoosenColorCode } from "../../../store/selectors/choosenColorCodeSelectors";
 import { selectTankCurrentVolumeData } from "../../../store/selectors/commonSelectors";
 import colors from "../../../styles/colors";
 import fonts from "../../../styles/fonts";
 import { cellSize } from "../../../styles/spacings";
+//@ts-ignore
+import Color from 'color-converter'
 
 export type ITankLevelBar = {
   id: Id,
   isCleaningSubstance?: boolean,
+  isMixingTank?: boolean
 }
 
-const TankLevelBar: React.FC<ITankLevelBar> = ({ id, isCleaningSubstance }: ITankLevelBar) => {
+const TankLevelBar: React.FC<ITankLevelBar> = ({ id, isCleaningSubstance, isMixingTank }: ITankLevelBar) => {
   const tankLevelData = useSelector((state: IState) => selectTankCurrentVolumeData(state, { id, isCleaningSubstance }))
+  const colorToGain = useSelector(selectChoosenColorCode) || '#000000'
+  
+  const isBright = () => {
+    if (!colorToGain) {
+
+      return true
+    }
+    const colorInRgb = Color.fromHex(colorToGain).toRGB()
+    return colorInRgb.r > 200 && colorInRgb.g > 200 && colorInRgb.b > 200
+  }
+
+  const getMostColor = () => {
+    const colorInRgb = Color.fromHex(colorToGain).toRGB()
+
+    if (colorInRgb.r > colorInRgb.g && colorInRgb.r > colorInRgb.b) {
+      return '#FAA'
+    }
+
+
+    if (colorInRgb.g > colorInRgb.r && colorInRgb.g > colorInRgb.b) {
+      return '#AFA'
+    }
+
+
+    if (colorInRgb.b > colorInRgb.g && colorInRgb.b > colorInRgb.a) {
+      return '#AAF'
+    }
+  }
 
   return (
     <>
       <TankLevelBarWrapper>
-        <TankCurrentLevel colorCode={tankLevelData.color} currentHeight={tankLevelData.current_volume_percent} />
+        <TankCurrentLevel colorCode={isMixingTank ? isBright() ? getMostColor() : colorToGain  : tankLevelData.color} currentHeight={tankLevelData.current_volume_percent} />
       </TankLevelBarWrapper>
       <TankLevelData>
         <span>{tankLevelData.capacity} L</span>
@@ -30,7 +62,8 @@ const TankLevelBar: React.FC<ITankLevelBar> = ({ id, isCleaningSubstance }: ITan
 }
 
 TankLevelBar.defaultProps = {
-  isCleaningSubstance: false
+  isCleaningSubstance: false,
+  isMixingTank: false
 }
 
 const TankLevelBarWrapper = styled.div`
@@ -49,7 +82,7 @@ const TankCurrentLevel = styled.div<
   }
 >`
   width: 100%;
-  background-image: linear-gradient(to right, ${colors.WHITE} 10%, ${({ colorCode }) => `#${colorCode}`});
+  background-image: linear-gradient(to right, ${colors.WHITE} 10%, ${({ colorCode }) => `${colorCode}`});
   height: ${({ currentHeight }) => `${(currentHeight as number) * 100}%`};
   position: absolute;
   bottom: 0;

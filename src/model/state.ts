@@ -11,7 +11,8 @@ export interface IPaint {
   count_liters: number, //
   valve_open: boolean, //
   max_level: boolean, //
-  min_level: boolean //
+  min_level: boolean,//,
+  refill: boolean
 }
 
 export interface ICleaningSubstance {
@@ -20,7 +21,8 @@ export interface ICleaningSubstance {
   current_volume: number,
   valve_open: boolean,
   max_level: boolean,
-  min_level: boolean
+  min_level: boolean,
+  refill: boolean
 }
 
 export interface IMixingTank {

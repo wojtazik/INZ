@@ -1,26 +1,20 @@
 import React, { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Tooltip from 'react-tooltip-lite'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { useIO } from '../../../context/SocketContext'
 import { IState } from '../../../model/state'
-import { setPaintRefilling, setPaintValveState } from '../../../store/actions/setPaints'
-import { selectIsRefilling, selectIsValveOpen } from '../../../store/selectors/commonSelectors'
+import { setCleaningSubstanceRefilling, setCleaningSubstanceValveOpen } from '../../../store/actions/setCleaningSubstance'
+import { selectCleaningSubstance } from '../../../store/selectors/cleaningSubstanceSelectors'
+import { selectIsValveOpen } from '../../../store/selectors/commonSelectors'
 import { selectIsMixerWorking } from '../../../store/selectors/mixerWorkingSelectors'
-import { selectPaintDataById } from '../../../store/selectors/paintsSelectors'
 import { selectIsProcessRunning } from '../../../store/selectors/processRunningSelectors'
-import colors from '../../../styles/colors'
 import Button from '../../common/SimpleButton/SimpleButton'
 import { TooltipContent } from '../../common/TooltipContent/TooltipContent'
 
-export type IColorTankDataActionButtonsProps = {
-  id: string
-}
-
-const ColorTankDataActionButtons = ({ id }: IColorTankDataActionButtonsProps) => {
-  const paint = useSelector((state: IState) => selectPaintDataById(state, { id }))
-  const { valve_open, refill } = paint
-  const dispatch = useDispatch()
+const CleaningTankDataActionButtons = () => {
+  const cleaningSubstanceTankData = useSelector(selectCleaningSubstance)
+  const isValveOpen = useSelector((state: IState) => selectIsValveOpen(state, { id: cleaningSubstanceTankData.id }))
   const isProcessRunning = useSelector(selectIsProcessRunning)
   const isMixerWorking = useSelector(selectIsMixerWorking)
   
@@ -29,20 +23,16 @@ const ColorTankDataActionButtons = ({ id }: IColorTankDataActionButtonsProps) =>
 
   const socket = useIO()
 
+  const dispatch = useDispatch()
+
   const onToggleValve = () => {
-    dispatch(setPaintValveState({
-      id,
-      name: paint.name,
-      valve_open: !valve_open
-    }, socket))
+    dispatch(setCleaningSubstanceValveOpen(!isValveOpen, socket))
   }
 
   const onRefillTank = () => {
-    dispatch(setPaintRefilling({
-      id,
-      name: paint.name,
-      refilling: !refill
-    }, socket))
+    if (!cleaningSubstanceTankData.refill) {
+      dispatch(setCleaningSubstanceRefilling(!cleaningSubstanceTankData.refill, socket))
+    }
   }
 
   useEffect(() => {
@@ -63,14 +53,14 @@ const ColorTankDataActionButtons = ({ id }: IColorTankDataActionButtonsProps) =>
         content={
           <TooltipContent>Nie możesz edytować trwajacego procesu</TooltipContent>  
         }
-        useHover={isProcessRunning || isMixerWorking}
+        useHover={isProcessRunning || isMixerWorking || cleaningSubstanceTankData.refill}
         useDefaultStyles
       >
         <Button 
           onClick={!isProcessRunning ? onToggleValve : () => {}}
           isDisabled={isProcessRunning || isMixerWorking}
         >
-          {valve_open ? 'Zamknij' : 'Otwórz'} Zawór
+          {isValveOpen ? 'Zamknij' : 'Otwórz'} Zawór
         </Button>
       </Tooltip>
       <Tooltip
@@ -78,11 +68,11 @@ const ColorTankDataActionButtons = ({ id }: IColorTankDataActionButtonsProps) =>
         content={
           <TooltipContent>Nie możesz edytować trwajacego procesu</TooltipContent>  
         }
-        useHover={isProcessRunning}
+        useHover={isProcessRunning || cleaningSubstanceTankData.refill}
         useDefaultStyles
       >
         <Button
-          onClick={!isProcessRunning && !refill ? onRefillTank : () => {}}
+          onClick={!isProcessRunning ? onRefillTank : () => {}}
           isDisabled={isProcessRunning}
         >
           Uzupełnij
@@ -93,6 +83,7 @@ const ColorTankDataActionButtons = ({ id }: IColorTankDataActionButtonsProps) =>
   )
 }
 
+
 const ButtonsWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -100,4 +91,4 @@ const ButtonsWrapper = styled.div`
   margin-left: auto;
 `
 
-export default ColorTankDataActionButtons
+export default CleaningTankDataActionButtons

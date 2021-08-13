@@ -8,7 +8,6 @@ const ColorPalette = () => {
   const [ colors, setColors ] = useState(colorsInitial)
   const [ gainedColor, setGainedColor ] = useState('')
 
-
   const getColorsSummaryCount = (colors: any) => {
     let colorsSummaryCount = 0
 
@@ -45,12 +44,10 @@ const ColorPalette = () => {
         //@ts-ignore
         rgbColorToGain.blue += colorInRgb.b * colors[color].count
     }
-    console.log(rgbColorToGain)
 
     rgbColorToGain.red /= colorsSummaryCount
     rgbColorToGain.green /= colorsSummaryCount
     rgbColorToGain.blue /= colorsSummaryCount
-    console.log(rgbColorToGain)
     // return Color.fromRGB(rgbColorToGain.red, rgbColorToGain.green, rgbColorToGain.blue).toHex()
     return '#000000'
   }

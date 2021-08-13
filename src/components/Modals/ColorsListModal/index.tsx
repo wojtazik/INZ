@@ -1,9 +1,18 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import styled, { css } from 'styled-components'
 import { setColorsListModalOpen } from '../../../store/actions/setModalsOpen'
 import colors from '../../../styles/colors'
 import Expand from 'react-expand-animated'
+import { pushChoosenColorCode, setChoosenColorCode } from '../../../store/actions/setChoosenColorCode'
+import { useIO } from '../../../context/SocketContext'
+import { selectPaints } from '../../../store/selectors/paintsSelectors'
+import { IPaint } from '../../../model/state'
+import { selectVolumeToGain } from '../../../store/selectors/mixingTankSelectors'
+import { setPaints } from '../../../store/actions/setPaints'
+import Button from '../../common/SimpleButton/SimpleButton'
+import { selectChoosenColorCode } from '../../../store/selectors/choosenColorCodeSelectors'
+import { selectIsProcessRunning } from '../../../store/selectors/processRunningSelectors'
 
 type IExampleColor = {
   name: string,
@@ -83,10 +92,14 @@ const exampleColors: IExampleColor[] = [
   }
 ]
 
-
 const ColorsListModal = () => {
   const dispatch = useDispatch()
   const [expandedColor, setExpandedColor] = useState('')
+  const socket = useIO()
+  const paints = useSelector(selectPaints)
+  const volumeToGain = useSelector(selectVolumeToGain)
+  const colorToGain = useSelector(selectChoosenColorCode)
+  const processRunning = useSelector(selectIsProcessRunning)
 
   const onClickExit = (e: React.MouseEvent) => {
     dispatch(setColorsListModalOpen(false))
@@ -98,6 +111,30 @@ const ColorsListModal = () => {
     } else {
       setExpandedColor(name)
     }
+  }
+
+  const onColorChoose = (color: IExampleColor) => {
+    dispatch(setChoosenColorCode(color.code, socket))
+    dispatch(pushChoosenColorCode(color.code))
+
+    const { counts } = color
+    const keys = Object.keys(counts)
+
+    let newColors = paints.map((paint: IPaint) => ({
+      ...paint,
+      count: keys.includes(paint.name) ? color.counts[paint.name || 0] : paint.count
+    }))
+
+    const colorsSummaryCount = newColors.reduce((a, b) => a + (b['count'] || 0), 0)
+
+    newColors = newColors.map((color: IPaint) => ({
+      ...color,
+      ratio: colorsSummaryCount === 0 ? 0 : (color.count / colorsSummaryCount),
+      count_liters: colorsSummaryCount === 0 ? 0 : (color.count / colorsSummaryCount) * volumeToGain
+    }))
+
+    dispatch(setPaints(newColors, socket))
+    dispatch(setColorsListModalOpen(false))
   }
 
   const renderExampleColorsList = () => exampleColors.map((exampleColor: IExampleColor, index) => (
@@ -120,6 +157,9 @@ const ColorsListModal = () => {
           {Object.keys(exampleColor.counts).map((key: string) => (
             <ChunkColorCount>{key}: {exampleColor.counts[key]}</ChunkColorCount>
           ))}
+          <ChooseColorButton isRunning={processRunning} onClick={!processRunning ? () => onColorChoose(exampleColor) : undefined}>
+            Wybierz
+          </ChooseColorButton>
         </ExpandedColorData>
       </Expand>
     </ListItem>
@@ -240,6 +280,7 @@ const ExpandedColorData = styled.div<ExpandedColorDataProps>`
   border-right: 1px solid ${colors.GRAY_BASIC};
   margin-left: 5px;
   margin-right: 5px;
+  position: relative;
 
   ${({ isLast }) => isLast && css`
     border-bottom: 1px solid ${colors.GRAY_BASIC};
@@ -263,6 +304,26 @@ const ExampleColorHint = styled.div<ExampleColorHintProps>`
   border: 1px solid transparent;
   background: ${({ color }) => color};
   margin-right: 10px;
+`
+
+type ChooseColorButtonProps = {
+  isRunning: boolean
+}
+
+const ChooseColorButton = styled(Button)<ChooseColorButtonProps>`
+  position: absolute;
+  right: 15px;
+  top: 15px;
+
+  ${({ isRunning }) => isRunning && css`
+    cursor: default;
+    background: ${colors.ERROR_RED};
+
+    &:hover {
+      background: ${colors.ERROR_RED}
+    }
+  `}
+
 `
 
 export default ColorsListModal

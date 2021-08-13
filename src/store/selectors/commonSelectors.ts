@@ -29,6 +29,17 @@ const selectTankCurrentVolumeData = (state: IState,
     }
 }
 
+const selectIsRefilling = (state: IState, { id }: { id: string }) => {
+  const paints = state.paints
+  const cleaningTank = state.cleaning_substance
+
+  const tankById = find([...paints, cleaningTank], (item: ICleaningSubstance | IPaint) => {
+    return item.id === id
+  })
+
+  return tankById?.refill
+}
+
 const selectIsValveOpen = (state: IState, { id }: {id: string}) => {
   const paints = state.paints
   const mixingTank = selectMixingTank(state)
@@ -48,5 +59,6 @@ const selectMixerWorking = (state: IState): boolean => {
 export {
   selectTankCurrentVolumeData,
   selectMixerWorking,
-  selectIsValveOpen
+  selectIsValveOpen,
+  selectIsRefilling
 }

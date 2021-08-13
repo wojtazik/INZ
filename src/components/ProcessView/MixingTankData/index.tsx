@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
 import { selectMixingTank } from '../../../store/selectors/mixingTankSelectors'
 import { selectIsProcessRunning } from '../../../store/selectors/processRunningSelectors'
@@ -12,23 +12,42 @@ import { IInputError } from '../../../model/commonTypes'
 import validate from './validate'
 import { TooltipContent } from '../../common/TooltipContent/TooltipContent'
 import Button, { TooltippedButton } from '../../common/SimpleButton/SimpleButton'
+import { setMixingTank, setMixingTankValveState } from '../../../store/actions/setMixingTank'
+import { selectPaints } from '../../../store/selectors/paintsSelectors'
+import { IPaint } from '../../../model/state'
+import { setPaints } from '../../../store/actions/setPaints'
+import { useIO } from '../../../context/SocketContext'
+import { selectIsMixerWorking } from '../../../store/selectors/mixerWorkingSelectors'
 
 const MixingTankData = () => {
   const isProcessRunning = useSelector(selectIsProcessRunning)
+  const isMixerWorking = useSelector(selectIsMixerWorking)
   const mixingTank = useSelector(selectMixingTank)
+  const paints = useSelector(selectPaints)
+
   const [isEditMode, onSetIsEditMode] = useState(false)
   const [localVolumeToGain, onSetLocalVolumeToGain] = useState(mixingTank.volume_to_gain)
   const [errors, setErrors] = useState<IInputError[]>([])
-
+  const [localMixingTime, onSetLocalMixingTime] = useState(mixingTank.mixing_time_seconds)
+  
   const tooltipRef = useRef<Tooltip>(null)
+  
+  const socket = useIO()
+
+  const dispatch = useDispatch()
 
   const toggleIsEditMode = () => {
     onSetIsEditMode(!isEditMode)
   }
 
+  const toggleValveOpen = () => {
+    dispatch(setMixingTankValveState(!mixingTank.valve_open, socket))
+  }
+
   useEffect(() => {
     const currentErrors = validate({
       localVolumeToGain,
+      localMixingTime,
       mixingTank
     })
     
@@ -38,7 +57,7 @@ const MixingTankData = () => {
       // @ts-ignore
       tooltipRef.current?.hideTip()
     }
-  }, [localVolumeToGain, mixingTank])
+  }, [localMixingTime, localVolumeToGain, mixingTank])
 
 
   const renderTooltipErrors = useCallback(() => (
@@ -49,9 +68,24 @@ const MixingTankData = () => {
     </TooltipContent>
   ), [errors])
 
+  const saveProcessParams = () => {
+    dispatch(setMixingTank({
+      mixing_time_seconds: localMixingTime,
+      volume_to_gain: localVolumeToGain
+    }, socket))
+    const newPaints = paints.map((paint: IPaint) => ({
+      ...paint,
+      count_liters: paint.ratio * localVolumeToGain
+    }))
+
+    dispatch(setPaints(newPaints, socket))
+
+    toggleIsEditMode()
+  }
+
   const renderEditMode = () => (
     <MixingTankWrapper>
-      <TankLevelBar id={mixingTank.id} />
+      <TankLevelBar id={mixingTank.id} isMixingTank={true} />
       <TooltippedButton>
         <Tooltip
           ref={tooltipRef}
@@ -59,7 +93,7 @@ const MixingTankData = () => {
           useDefaultStyles
           useHover={errors.length > 0}
         >
-          <Button onClick={toggleIsEditMode} disabled={errors.length > 0}>Zapisz</Button>
+          <Button onClick={saveProcessParams} disabled={errors.length > 0}>Zapisz</Button>
         </Tooltip>
       </TooltippedButton>
       <FormInputsWrapper>
@@ -73,25 +107,55 @@ const MixingTankData = () => {
           />
           <span>L</span>
         </Row>
+        <Label htmlFor='mixing_tank_data_mixing_time'>Czas mieszania</Label>
+        <Row>
+          <Input
+            type='number'
+            name='mixing_tank_data_mixing_time'
+            value={localMixingTime}
+            onChange={(e) => onSetLocalMixingTime(parseInt(e.target.value))}
+          />
+          <span>S</span>
+        </Row>
       </FormInputsWrapper>
     </MixingTankWrapper>
   )
 
   const renderProcessInfo = () => (
     <MixingTankWrapper>
-      <TankLevelBar id={mixingTank.id} />
+      <TankLevelBar id={mixingTank.id}  isMixingTank={true} />
       <MixingTankProcessView />
+      <TooltippedButton position='first'>
+        <Tooltip
+          content={
+            <TooltipContent>Nie możesz edytować trwajacego procesu</TooltipContent>
+          }
+          useHover={isProcessRunning || isMixerWorking}
+          useDefaultStyles
+        >
+          <div>
+            <Button
+              onClick={!isProcessRunning && !isMixerWorking ? toggleValveOpen : () => {}}
+              isDisabled={isProcessRunning}
+              id='toggle-mixing-tank-edit'
+            >
+              {mixingTank.valve_open ? 'Zamknij zawór' : 'Otwórz zawór'}
+            </Button>
+          </div>
+
+        </Tooltip>
+      </TooltippedButton>
       <TooltippedButton>
         <Tooltip
           content={
             <TooltipContent>Nie możesz edytować trwajacego procesu</TooltipContent>
           }
-          useHover={isProcessRunning}
+          useHover={isProcessRunning || isMixerWorking}
           useDefaultStyles
         >
           <div>
             <Button
-              onClick={!isProcessRunning ? toggleIsEditMode : () => {}}
+              onClick={!isProcessRunning && isMixerWorking ? toggleIsEditMode : () => {}}
               isDisabled={isProcessRunning}
               id='toggle-mixing-tank-edit'
             >

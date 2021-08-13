@@ -151,8 +151,8 @@ const ColorPalette = () => {
         opisującą procentowy udział koloru w barwie wynikowej. Aby ustawić wymagany litraż, przejdź do pierwszej zakładki.
       </ComponentWrapperHint>
       <ColorPaletteWrapper>
+        <SaveButton isDisabled={processRunning} onClick={onSaveConfiguration}>Zapisz</SaveButton>
         <GainedColor colorCode={gainedColor} isBright={isBright()} onClick={onOpenColorsListModal}>
-          <SaveButton isDisabled={processRunning} onClick={onSaveConfiguration}>Zapisz</SaveButton>
           <GainedColorCode isDark={isDark()}>
             {gainedColor || 'Nie wybrano'}
           </GainedColorCode>
@@ -182,6 +182,7 @@ const ComponentWrapper = styled.div`
   max-width: 1040px;
   margin-left: auto;
   margin-right: auto;
+  position: relative;
 `
 
 const ComponentWrapperHint = styled.p`
@@ -300,8 +301,8 @@ const OtherData = styled.div`
 
 const SaveButton = styled.button<WithDisabledProp>`
   position: absolute;
-  right: -50%;
-  top: 50%;
+  right: 20%;
+  top: 43%;
   transform: translateY(-50%);
   padding: 15px 20px;
   background: ${colors.GREEN_BASIC};

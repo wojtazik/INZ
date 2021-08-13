@@ -8,6 +8,7 @@ import { selectIsProcessRunning } from '../../../store/selectors/processRunningS
 import colors from '../../../styles/colors'
 import fonts from '../../../styles/fonts'
 import CleaningSubstanceTankDataProcessView from '../CleaningSubstanceTankDataProcessView'
+import CleaningTankDataActionButtons from '../CleaningTankDataActionButtons'
 import TankLevelBar from '../TankLevelBar'
 
 const MixingTankData = () => {
@@ -26,6 +27,7 @@ const MixingTankData = () => {
     <MixingTankDataWrapper>
       <TankLevelBar id={cleaningSubstance.id} isCleaningSubstance />
       <CleaningSubstanceTankDataProcessView />
+      <CleaningTankDataActionButtons />
     </MixingTankDataWrapper>  
   )
 }
