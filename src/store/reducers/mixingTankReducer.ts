@@ -14,7 +14,6 @@ const initialMixingTank: IMixingTank = {
 }
 
 export const mixingTankReducer = (state: IMixingTank = initialMixingTank, action: ISetMixingTank | ISetPartialMixingTank) => {
-  console.log(action.type)
   switch (action.type) {
     case SET_MIXING_TANK:
       return {
@@ -22,10 +21,6 @@ export const mixingTankReducer = (state: IMixingTank = initialMixingTank, action
         ...action.payload
       }
     case SET_PARTIAL_MIXING_TANK:
-      console.log({
-        ...state,
-        ...action.payload
-      })
       return {
         ...state,
         ...action.payload

@@ -4,7 +4,7 @@ import { pushChoosenColorCode } from "../store/actions/setChoosenColorCode";
 import { pushCleaningSubstanceRefill, pushPartialCleaningSubstance, setCleaningSubstance } from "../store/actions/setCleaningSubstance";
 import { pushMixerWorking } from "../store/actions/setMixerWorking";
 import { pushPartialMixingTank } from "../store/actions/setMixingTank";
-import { pushPaint, pushPaints } from "../store/actions/setPaints";
+import { pushPaint, pushPaints, setPaint } from "../store/actions/setPaints";
 import { pushProcessRunning } from "../store/actions/setProcessRunning";
 
 function processData(dispatch: Dispatch<any>, data: any) {
@@ -29,6 +29,12 @@ function processData(dispatch: Dispatch<any>, data: any) {
         if (processData.mixing_tank !== undefined) {
             console.log('mixing tank data exists')
             dispatch(pushPartialMixingTank(processData.mixing_tank))
+        }
+
+        if (processData.paints !== undefined) {
+            processData.paints.forEach((paint: Partial<IPaint>) => {
+                dispatch(setPaint(paint))
+            })
         }
 
     }

@@ -21,7 +21,7 @@ export const pushPaints = (payload: Partial<IPaint>[]) => ({
   payload
 })
 
-export const setPaint = (payload: IPaint): ISetPaint => ({
+export const setPaint = (payload: Partial<IPaint>): ISetPaint => ({
   type: SET_PAINT,
   payload
 })

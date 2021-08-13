@@ -49,6 +49,14 @@ const TooltippedButton = styled.div<ITooltippedButtonProps>`
         `
       }
 
+      case 'first': {
+        return css`
+          bottom: 60px;
+          left: 50%;
+          transform: translateX(-50%);
+        `
+      }
+
       default: {
         return css`
           bottom: 15px;

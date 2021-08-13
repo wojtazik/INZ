@@ -26,6 +26,7 @@ const ProcessData = () => {
 
   const socket = useIO()
   const tooltipRef = useRef<Tooltip>(null)
+  const refillTooltipRef = useRef<Tooltip>(null)
 
   const dispatch = useDispatch()
 
@@ -48,6 +49,13 @@ const ProcessData = () => {
 
   const onSetProcessRunning = () => {
     dispatch(setProcessRunning(true, socket))
+  }
+
+  const checkIfSomeTankRefilling = () => {
+    const isRefillingSomePaintTank = !!paints.find((paint) => paint.refill === true)
+    const isRefillingCleaningSubstanceTank = cleaningSubstance.refill
+
+    return isRefillingSomePaintTank || isRefillingCleaningSubstanceTank
   }
 
   useEffect(() => {
@@ -85,6 +93,8 @@ const ProcessData = () => {
     processRunning
   ])
 
+console.log(checkIfSomeTankRefilling())
+
   return (
     <ProcessDataWrapper>
       <Tooltip
@@ -102,12 +112,23 @@ const ProcessData = () => {
           Uruchom proces
         </StartButton>
       </Tooltip>
-      <StopButton disabled={!processRunning} isRunning={!processRunning}>Zatrzymaj proces</StopButton>  
-      <RefillAllButton
-        disabled={processRunning}
-        isRunning={processRunning}
-        onClick={onSetAllRefilling}
-      >Uzupełnij wszystkie</RefillAllButton>  
+      <StopButton disabled={!processRunning} isRunning={!processRunning}>Zatrzymaj proces</StopButton>
+      <Tooltip
+        ref={refillTooltipRef}
+        content={checkIfSomeTankRefilling() && 'Nie możesz użyć podczas uzupełniania zbiornika'}
+        useDefaultStyles
+        useHover={checkIfSomeTankRefilling()}
+      >
+        <RefillAllButton
+          disabled={processRunning || checkIfSomeTankRefilling()}
+          isRunning={processRunning}
+          isRefill={checkIfSomeTankRefilling()}
+          onClick={!checkIfSomeTankRefilling() ? onSetAllRefilling : undefined}
+        >
+          Uzupełnij wszystkie
+        </RefillAllButton>  
+        </Tooltip>
+
     </ProcessDataWrapper>
   )
 }
@@ -197,15 +218,20 @@ const StopButton = styled(BaseButton)<ProcessRunningProps>`
   `}
 `
 
-const RefillAllButton = styled(BaseButton)<ProcessRunningProps>`
+export type RefillProps = {
+  isRefill: boolean
+}
+
+const RefillAllButton = styled(BaseButton)<ProcessRunningProps & RefillProps>`
   background: ${colors.NAVY_BLUE};
+  width: 100%;
   box-shadow: 1px 1px 8px ${colors.NAVY_BLUE};
 
   &:hover {
     background: ${colors.BLUE_LIGHTEN};
   }
 
-  ${({ isRunning }) => isRunning && css`
+  ${({ isRunning, isRefill }) => (isRunning || isRefill) && css`
     cursor: default;
 
     &:after {

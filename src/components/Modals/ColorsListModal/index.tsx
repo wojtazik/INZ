@@ -12,6 +12,7 @@ import { selectVolumeToGain } from '../../../store/selectors/mixingTankSelectors
 import { setPaints } from '../../../store/actions/setPaints'
 import Button from '../../common/SimpleButton/SimpleButton'
 import { selectChoosenColorCode } from '../../../store/selectors/choosenColorCodeSelectors'
+import { selectIsProcessRunning } from '../../../store/selectors/processRunningSelectors'
 
 type IExampleColor = {
   name: string,
@@ -98,6 +99,7 @@ const ColorsListModal = () => {
   const paints = useSelector(selectPaints)
   const volumeToGain = useSelector(selectVolumeToGain)
   const colorToGain = useSelector(selectChoosenColorCode)
+  const processRunning = useSelector(selectIsProcessRunning)
 
   const onClickExit = (e: React.MouseEvent) => {
     dispatch(setColorsListModalOpen(false))
@@ -155,7 +157,7 @@ const ColorsListModal = () => {
           {Object.keys(exampleColor.counts).map((key: string) => (
             <ChunkColorCount>{key}: {exampleColor.counts[key]}</ChunkColorCount>
           ))}
-          <ChooseColorButton onClick={() => onColorChoose(exampleColor)}>
+          <ChooseColorButton isRunning={processRunning} onClick={!processRunning ? () => onColorChoose(exampleColor) : undefined}>
             Wybierz
           </ChooseColorButton>
         </ExpandedColorData>
@@ -304,10 +306,23 @@ const ExampleColorHint = styled.div<ExampleColorHintProps>`
   margin-right: 10px;
 `
 
-const ChooseColorButton = styled(Button)`
+type ChooseColorButtonProps = {
+  isRunning: boolean
+}
+
+const ChooseColorButton = styled(Button)<ChooseColorButtonProps>`
   position: absolute;
   right: 15px;
   top: 15px;
+
+  ${({ isRunning }) => isRunning && css`
+    cursor: default;
+    background: ${colors.ERROR_RED};
+
+    &:hover {
+      background: ${colors.ERROR_RED}
+    }
+  `}
 
 `
 
