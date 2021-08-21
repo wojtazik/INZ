@@ -1,6 +1,7 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
 import ColorPalette from "../components/ColorPalette";
+import ControllerErrors from "../components/ControllerErrors";
 import ModalsContainer from "../components/ModalsContainer";
 import PageWrapper from "../components/PageWrapper/PageWrapper";
 import ProcessView from "../components/ProcessView";
@@ -22,7 +23,7 @@ const AppRouter = () => {
         </Route>
         <Route path='/errors'>
           <PageWrapper>
-            errors
+            <ControllerErrors />
           </PageWrapper>
         </Route>
       </Switch>
