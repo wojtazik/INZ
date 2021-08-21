@@ -5,7 +5,8 @@ import { reduce } from "lodash";
 
 const initialMixingTank: IMixingTank = {
   id: uuidv4(),
-  current_volume: 500,
+  current_volume: 0,
+  current_volume_liters: 0,
   capacity: 1000,
   mixing_time_seconds: 0,
   mixing_time_seconds_remaining: 0,

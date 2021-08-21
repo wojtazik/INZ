@@ -11,8 +11,6 @@ import { pushProcessRunning } from "../store/actions/setProcessRunning";
 function processData(dispatch: Dispatch<any>, data: any) {
     const { success, data: processData } = data
 
-    console.log(processData)
-    
     if (success) {
         if (processData.mixer_working !== undefined) {
             dispatch(pushMixerWorking(processData.mixer_working))
@@ -22,8 +20,8 @@ function processData(dispatch: Dispatch<any>, data: any) {
             dispatch(pushProcessRunning(processData.process_running))
         }
     
-        if (processData.cleaning_substsance !== undefined) {
-            dispatch(pushPartialCleaningSubstance(processData.cleaning_substsance))
+        if (processData.cleaning_substance !== undefined) {
+            dispatch(pushPartialCleaningSubstance(processData.cleaning_substance))
         }
         if (processData.mixing_tank !== undefined) {
             dispatch(pushPartialMixingTank(processData.mixing_tank))

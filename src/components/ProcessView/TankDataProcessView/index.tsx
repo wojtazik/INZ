@@ -1,8 +1,10 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components'
+import { useIO } from '../../../context/SocketContext'
 import { Id } from '../../../model/commonTypes'
 import { IState } from '../../../model/state'
+import { setPaintRefilling } from '../../../store/actions/setPaints'
 import { selectPaintDataById } from '../../../store/selectors/paintsSelectors'
 import fonts from '../../../styles/fonts'
 import { cellSize } from '../../../styles/spacings'
@@ -13,6 +15,19 @@ export type ITankDataProcessView = {
 
 const TankDataProcessView = ({ id }: ITankDataProcessView) => {
   const paintTankData = useSelector((state: IState) => selectPaintDataById(state, { id }))
+  const socket = useIO()
+  
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (paintTankData.current_volume_liters >= 1000 && paintTankData.refill) {
+      dispatch(setPaintRefilling({
+        id,
+        name: paintTankData.name,
+        refilling: false
+      }, socket))
+    }
+  }, [paintTankData])
 
   return (
     <TankDataWrapper>
@@ -42,7 +57,7 @@ const TankDataProcessView = ({ id }: ITankDataProcessView) => {
       <TankDataRow>
         <TankDataKey>Obecnie[L]: </TankDataKey>
         <TankDataValue>
-          {paintTankData.current_volume.toFixed(2)} L
+          {paintTankData.current_volume_liters.toFixed(2)} L
         </TankDataValue>
       </TankDataRow>
 

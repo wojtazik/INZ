@@ -33,7 +33,16 @@ const MixingTankProcessView = () => {
           Obj. do osiągnięcia:
         </TankDataKey>
         <TankDataValue>
-          {mixingTank.volume_to_gain} L
+          {mixingTank.volume_to_gain.toFixed(2)} L
+        </TankDataValue>
+      </TankDataRow>
+
+      <TankDataRow>
+        <TankDataKey>
+          Obecnie [L]:
+        </TankDataKey>
+        <TankDataValue>
+          {mixingTank.current_volume_liters.toFixed(2)} L
         </TankDataValue>
       </TankDataRow>
 

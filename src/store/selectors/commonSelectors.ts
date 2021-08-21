@@ -5,6 +5,19 @@ import { selectCleaningSubstance } from "./cleaningSubstanceSelectors";
 import { selectMixingTank } from "./mixingTankSelectors";
 import { find } from 'lodash'
 import { selectChoosenColorCode } from "./choosenColorCodeSelectors";
+import { colorNames } from "../../config/colors";
+
+const selectTankById = (state: IState, { id }: { id: string }) => {
+  const paints = state.paints
+  const mixingTank = selectMixingTank(state)
+  const cleaningSubstance = selectCleaningSubstance(state)
+
+  const tankById = find([...paints, mixingTank, cleaningSubstance], (item: IMixingTank|ICleaningSubstance|IPaint) => {
+    return item.id === id
+  })
+
+  return tankById
+}
 
 const selectTankCurrentVolumeData = (state: IState, 
   { id, isCleaningSubstance } : { id: Id, isCleaningSubstance?: boolean }) : TankCurrentLevelData => {
@@ -17,6 +30,7 @@ const selectTankCurrentVolumeData = (state: IState,
     })
 
     return {
+      name: !tankById?.hasOwnProperty('name') ? null : (tankById as IPaint).name,
       capacity: tankById?.capacity,
       current_level: tankById?.current_volume,
       color: isCleaningSubstance 
@@ -25,7 +39,7 @@ const selectTankCurrentVolumeData = (state: IState,
           ? selectChoosenColorCode(state)
           : (tankById as IPaint)?.code,
       // @ts-ignore
-      current_volume_percent: tankById?.current_volume / tankById?.capacity
+      current_volume_percent: (tankById?.current_volume_liters / tankById?.capacity) * 100
     }
 }
 
@@ -56,9 +70,20 @@ const selectMixerWorking = (state: IState): boolean => {
   return state.mixer_working
 }
 
+const selectIsPaintTank = (state: IState, { id } : { id: string }): boolean => {
+  const tank = selectTankById(state, { id })
+
+  if (tank === undefined || !tank.hasOwnProperty('name')) {
+    return false
+  }
+
+  return colorNames.includes((tank as IPaint).name)
+}
 export {
   selectTankCurrentVolumeData,
   selectMixerWorking,
   selectIsValveOpen,
-  selectIsRefilling
+  selectIsRefilling,
+  selectTankById,
+  selectIsPaintTank
 }

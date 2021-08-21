@@ -26,7 +26,13 @@ export const paintsReducer = (state: IPaint[] = initialPaints, action: ISetPaint
     case SET_PAINT: 
       state = state.map((paint: IPaint) => {
         return (paint.id === (action.payload as IPaint).id || paint.name === (action.payload as Partial<IPaint>).name ) 
-          ? {...paint, ...action.payload} as IPaint
+          ? {
+            ...paint,
+            ...action.payload,
+            current_volume: (action.payload as IPaint).current_volume_liters 
+              ? (action.payload as IPaint).current_volume_liters / paint.capacity
+              : paint.current_volume
+          } as IPaint
           : paint
       })
 

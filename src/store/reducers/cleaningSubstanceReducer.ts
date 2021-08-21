@@ -4,8 +4,9 @@ import { v4 as uuidv4 } from 'uuid';
 
 const initialCleaningSubstance = {
   id: uuidv4(),
-  capacity: 20,
-  current_volume: 10,
+  capacity: 500,
+  current_volume: 0,
+  current_volume_liters: 0,
   valve_open: false,
   max_level: false,
   min_level: true,
@@ -15,10 +16,17 @@ const initialCleaningSubstance = {
 type CleaningSubstanceActions = ISetCleaningSubstance | ISetCleaningSubstanceValveOpen | ISetCleaningSubstanceRefill
 
 export const cleaningSubstanceReducer = (state: ICleaningSubstance = initialCleaningSubstance, action: CleaningSubstanceActions): ICleaningSubstance => {
+  
+  console.log(action.type)
   switch (action.type) {
     case SET_CLEANING_SUBSTANCE:
       return (action as ISetCleaningSubstance).payload
     case SET_PARTIAL_CLEANING_SUBSTANCE:
+
+    console.log('cleaning reducer', {
+      ...state,
+      ...(action as ISetPartialCleaningSubstance).payload
+    })
       return {
         ...state,
         ...(action as ISetPartialCleaningSubstance).payload

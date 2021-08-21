@@ -19,6 +19,7 @@ export interface ICleaningSubstance {
   id: string,
   capacity: number,
   current_volume: number,
+  current_volume_liters: number,
   valve_open: boolean,
   max_level: boolean,
   min_level: boolean,
@@ -31,6 +32,7 @@ export interface IMixingTank {
   mixing_time_seconds: number,
   mixing_time_seconds_remaining: number,
   current_volume: number,
+  current_volume_liters: number,
   capacity: number,
   valve_open: boolean
 }

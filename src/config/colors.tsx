@@ -39,4 +39,13 @@ const colors: ColorsInterface = {
     }
 }
 
+const colorNames = [
+    'black',
+    'white',
+    'cyan',
+    'magenta',
+    'yellow'
+]
+
+export { colorNames }
 export default colors
