@@ -93,8 +93,6 @@ const ProcessData = () => {
     processRunning
   ])
 
-console.log(checkIfSomeTankRefilling())
-
   return (
     <ProcessDataWrapper>
       <Tooltip
