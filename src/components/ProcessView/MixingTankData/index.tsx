@@ -155,7 +155,7 @@ const MixingTankData = () => {
         >
           <div>
             <Button
-              onClick={!isProcessRunning && isMixerWorking ? toggleIsEditMode : () => {}}
+              onClick={!isProcessRunning && !isMixerWorking ? toggleIsEditMode : () => {}}
               isDisabled={isProcessRunning}
               id='toggle-mixing-tank-edit'
             >

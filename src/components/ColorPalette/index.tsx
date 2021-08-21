@@ -114,7 +114,11 @@ const ColorPalette = () => {
 
   useEffect(() => {
     setLocalColors(colors.reduce((acc: ColorKeyValue, color: IPaint) => (
-      acc[color.name]=color, acc
+      acc[color.name]= {
+        ...localColors[color.name],
+        current_volume_liters: color.current_volume_liters,
+        current_volume: color.current_volume
+      }, acc
     ), {}))
   }, [colors])
 
