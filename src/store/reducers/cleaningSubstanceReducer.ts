@@ -17,16 +17,10 @@ type CleaningSubstanceActions = ISetCleaningSubstance | ISetCleaningSubstanceVal
 
 export const cleaningSubstanceReducer = (state: ICleaningSubstance = initialCleaningSubstance, action: CleaningSubstanceActions): ICleaningSubstance => {
   
-  console.log(action.type)
   switch (action.type) {
     case SET_CLEANING_SUBSTANCE:
       return (action as ISetCleaningSubstance).payload
     case SET_PARTIAL_CLEANING_SUBSTANCE:
-
-    console.log('cleaning reducer', {
-      ...state,
-      ...(action as ISetPartialCleaningSubstance).payload
-    })
       return {
         ...state,
         ...(action as ISetPartialCleaningSubstance).payload

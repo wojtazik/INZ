@@ -15,7 +15,7 @@ import { TooltipContent } from '../../common/TooltipContent/TooltipContent'
 const CleaningTankDataActionButtons = () => {
   const cleaningSubstanceTankData = useSelector(selectCleaningSubstance)
   const isValveOpen = useSelector((state: IState) => selectIsValveOpen(state, { id: cleaningSubstanceTankData.id }))
-  const isProcessRunning = useSelector(selectIsProcessRunning)
+  const isProcessRunning = useSelector(selectIsProcessRunning).info
   const isMixerWorking = useSelector(selectIsMixerWorking)
   
   const valveTooltipRef = useRef<Tooltip>(null)

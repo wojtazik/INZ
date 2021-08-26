@@ -21,7 +21,7 @@ const ColorTankDataActionButtons = ({ id }: IColorTankDataActionButtonsProps) =>
   const paint = useSelector((state: IState) => selectPaintDataById(state, { id }))
   const { valve_open, refill } = paint
   const dispatch = useDispatch()
-  const isProcessRunning = useSelector(selectIsProcessRunning)
+  const isProcessRunning = useSelector(selectIsProcessRunning).info
   const isMixerWorking = useSelector(selectIsMixerWorking)
   
   const valveTooltipRef = useRef<Tooltip>(null)

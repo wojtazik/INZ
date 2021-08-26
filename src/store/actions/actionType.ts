@@ -60,6 +60,16 @@ export interface ISetProcessRunning {
   payload: boolean
 }
 
+export interface ISetProcessRunningSettable {
+  type: string,
+  payload: boolean
+}
+
+export interface ISetProcessRunningInfo {
+  type: string,
+  payload: boolean
+}
+
 export interface ISetPaintValveState {
   type: string,
   payload: Partial<IPaint>
@@ -112,6 +122,9 @@ export const SET_PARTIAL_MIXING_TANK = 'SET_PARTIAL_MIXING_TANK'
 
 export const SET_ERRORS = 'SET_ERRORS'
 export const SET_PROCESS_RUNNING = 'SET_PROCESS_RUNNING'
+export const SET_PROCESS_RUNNING_SETTABLE = 'SET_PROCESS_RUNNING_SETTABLE'
+export const SET_PROCESS_RUNNING_INFO = 'SET_PROCESS_RUNNING_INFO'
+
 
 export const SET_BEAKERS = 'SET_BEAKERS'
 export const SET_BEAKERS_LEVEL = 'SET_BEAKERS_LEVEL'

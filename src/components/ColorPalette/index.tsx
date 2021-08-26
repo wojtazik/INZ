@@ -102,7 +102,7 @@ const ColorPalette = () => {
   }
 
   const onSaveConfiguration = () => {
-    if (!processRunning) {
+    if (!processRunning.info) {
       dispatch(setPaints(Object.values(localColors), socket))
       dispatch(setChoosenColorCode(gainedColor, socket))
     }
@@ -129,14 +129,14 @@ const ColorPalette = () => {
   const renderColorsManagement = () => {
     return Object.keys(localColors).map((colorName: string) => {
       const colorObject = localColors[colorName]
-
+      console.log(processRunning)
       return (
         <ColorWrapper>
           <ColorName>{colorObject.name}</ColorName>
           <ColorCountWrapper>
-            <CountButton onClick={() => !processRunning && onAddColor(colorObject.name)} isDisabled={processRunning}>+1</CountButton>
+            <CountButton onClick={() => !processRunning.info && onAddColor(colorObject.name)} isDisabled={processRunning.info}>+1</CountButton>
             <PaintCount>{colorObject.count} j</PaintCount>
-            <CountButton onClick={() => !processRunning && onRemoveColor(colorObject.name)} isDisabled={processRunning}>-1</CountButton>
+            <CountButton onClick={() => !processRunning.info && onRemoveColor(colorObject.name)} isDisabled={processRunning.info}>-1</CountButton>
           </ColorCountWrapper>
           <UseLiters>Użyjesz: {colorObject.count_liters.toFixed(2)} L</UseLiters>
           <OtherData>W zapasie: {colorObject.current_volume_liters.toFixed(2)} L</OtherData>
@@ -155,7 +155,7 @@ const ColorPalette = () => {
         opisującą procentowy udział koloru w barwie wynikowej. Aby ustawić wymagany litraż, przejdź do pierwszej zakładki.
       </ComponentWrapperHint>
       <ColorPaletteWrapper>
-        <SaveButton isDisabled={processRunning} onClick={onSaveConfiguration}>Zapisz</SaveButton>
+        <SaveButton isDisabled={processRunning.info} onClick={onSaveConfiguration}>Zapisz</SaveButton>
         <GainedColor colorCode={gainedColor} isBright={isBright()} onClick={onOpenColorsListModal}>
           <GainedColorCode isDark={isDark()}>
             {gainedColor || 'Nie wybrano'}

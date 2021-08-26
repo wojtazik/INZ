@@ -157,7 +157,7 @@ const ColorsListModal = () => {
           {Object.keys(exampleColor.counts).map((key: string) => (
             <ChunkColorCount>{key}: {exampleColor.counts[key]}</ChunkColorCount>
           ))}
-          <ChooseColorButton isRunning={processRunning} onClick={!processRunning ? () => onColorChoose(exampleColor) : undefined}>
+          <ChooseColorButton isRunning={processRunning.info} onClick={!processRunning.info ? () => onColorChoose(exampleColor) : undefined}>
             Wybierz
           </ChooseColorButton>
         </ExpandedColorData>

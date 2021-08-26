@@ -53,6 +53,12 @@ export interface IBeakers {
 export interface IModalsState {
   colors_list_modal_open: boolean
 }
+
+export interface IProcessRunning {
+  settable: boolean
+  info: boolean
+}
+
 export interface IState {
   paints: IPaint[],
   mixer_working: boolean,
@@ -60,7 +66,7 @@ export interface IState {
   choosen_color_code: string,
   mixing_tank: IMixingTank
   errors: IError[],
-  process_running: boolean
+  process_running: IProcessRunning
   beakers: IBeakers,
   modalsState: IModalsState
 }

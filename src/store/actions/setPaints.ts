@@ -4,6 +4,7 @@ import { IPaint } from "../../model/state";
 import { ISetPaint, ISetPaintRefilling, ISetPaints, ISetPaintsRefilling, ISetPaintValveState, SET_PAINT, SET_PAINTS, SET_PAINT_REFILLING, SET_PAINT_VALVE_STATE } from "./actionType";
 
 export const setPaints = (payload: IPaint[], socket: any) => (dispatch: Dispatch<ISetPaints>) => {
+  console.log('koń', payload)
   socket.emit('change.paints', payload)
 
   dispatch(pushPaints(payload.map((paint: IPaint) => {

@@ -20,7 +20,7 @@ import { useIO } from '../../../context/SocketContext'
 import { selectIsMixerWorking } from '../../../store/selectors/mixerWorkingSelectors'
 
 const MixingTankData = () => {
-  const isProcessRunning = useSelector(selectIsProcessRunning)
+  const isProcessRunning = useSelector(selectIsProcessRunning).info
   const isMixerWorking = useSelector(selectIsMixerWorking)
   const mixingTank = useSelector(selectMixingTank)
   const paints = useSelector(selectPaints)

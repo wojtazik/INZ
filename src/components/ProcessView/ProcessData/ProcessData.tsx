@@ -13,16 +13,19 @@ import { selectPaints } from '../../../store/selectors/paintsSelectors'
 import { selectIsProcessRunning } from '../../../store/selectors/processRunningSelectors'
 import colors from '../../../styles/colors'
 import fonts from '../../../styles/fonts'
+import usePrevious from '../../../util/hooks/usePrevious'
 import { TooltipContent } from '../../common/TooltipContent/TooltipContent'
 
 const ProcessData = () => {
-  const processRunning = useSelector(selectIsProcessRunning)
+  const processRunning = useSelector(selectIsProcessRunning).info
   const paints = useSelector(selectPaints)
   const cleaningSubstance = useSelector(selectCleaningSubstance)
   const mixingTank = useSelector(selectMixingTank)
   const isMixerWorking = useSelector(selectIsMixerWorking)
 
   const [errors, setErrors] = useState<Array<string>>([])
+
+  const prevProcessRunning = usePrevious(processRunning)
 
   const socket = useIO()
   const tooltipRef = useRef<Tooltip>(null)
@@ -47,8 +50,8 @@ const ProcessData = () => {
     }
   }
 
-  const onSetProcessRunning = () => {
-    dispatch(setProcessRunning(true, socket))
+  const onSetProcessRunning = (running: boolean) => {
+    dispatch(setProcessRunning(running, socket))
   }
 
   const checkIfSomeTankRefilling = () => {
@@ -61,10 +64,12 @@ const ProcessData = () => {
   useEffect(() => {
     const anyValveAreOpen = paints.find((paint) => paint.valve_open === true)
     const anyPaintAreNotEnoughtLiters = paints.find((paint) => paint.current_volume_liters < paint.count_liters)
-    const isEnoughCleaningSubstance = cleaningSubstance.current_volume === mixingTank.capacity
+    const isEnoughCleaningSubstance = cleaningSubstance.current_volume_liters === cleaningSubstance.capacity
     const isCleaningSubstanceValveOpen = cleaningSubstance.valve_open === true
     const isRefillingSomePaintTank = paints.find((paint) => paint.refill === true)
     const isRefillingCleaningSubstanceTank = cleaningSubstance.refill
+    const isMixingTimeNotSet = mixingTank.mixing_time_seconds < 30
+    const isVolumeToGainNotSet = mixingTank.volume_to_gain < 1
 
     const errorsNew = []
 
@@ -74,6 +79,8 @@ const ProcessData = () => {
     if (!isEnoughCleaningSubstance) errorsNew.push('Zbyt mało substancji czyszczącej')
     if (isCleaningSubstanceValveOpen) errorsNew.push('Otwarty zawór. Sprawdź zamknięcie zbiornika substancji czyszczącej')
     if (isMixerWorking) errorsNew.push('Nie można wystartować. Mieszadło jest w ruchu')
+    if (isMixingTimeNotSet) errorsNew.push('Czas mieszania powinien wynosić min. 30 sekund')
+    if (isVolumeToGainNotSet) errorsNew.push('Nie określono ilości farby do osiągnięcia')
     if (isRefillingSomePaintTank) errorsNew.push('Nie można wystartować. Trwa uzupełnianie zbiornika z farbą')
     if (isRefillingCleaningSubstanceTank) errorsNew.push('Nie można wystartować. Trwa uzupełnianie substancji czyszczącej')
 
@@ -93,6 +100,13 @@ const ProcessData = () => {
     processRunning
   ])
 
+  useEffect(() => {
+    if (prevProcessRunning === true && processRunning === false) {
+      dispatch(setProcessRunning(false, socket))
+
+    }
+  }, [prevProcessRunning, processRunning])
+
   return (
     <ProcessDataWrapper>
       <Tooltip
@@ -105,12 +119,16 @@ const ProcessData = () => {
           disabled={errors.length > 0}
           isRunning={processRunning}
           canStart={errors.length === 0}
-          onClick={errors.length === 0 ? onSetProcessRunning : undefined}
+          onClick={errors.length === 0 ? () => onSetProcessRunning(true) : undefined}
         >
           Uruchom proces
         </StartButton>
       </Tooltip>
-      <StopButton disabled={!processRunning} isRunning={!processRunning}>Zatrzymaj proces</StopButton>
+      <StopButton
+        disabled={!processRunning}
+        isRunning={!processRunning}
+        onClick={ processRunning ? () => onSetProcessRunning(false) : undefined}
+      >Zatrzymaj proces</StopButton>
       <Tooltip
         ref={refillTooltipRef}
         content={checkIfSomeTankRefilling() && 'Nie możesz użyć podczas uzupełniania zbiornika'}
