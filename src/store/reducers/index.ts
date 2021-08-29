@@ -8,6 +8,7 @@ import { mixingTankReducer } from "./mixingTankReducer";
 import { paintsReducer } from "./paintsReducer";
 import { processRunningReducer } from "./processRunningReducer";
 import { modalsOpenReducer } from "./modalsOpenReducer";
+import { manualWorkReducer } from "./manualWorkReducer";
 
 export default combineReducers({
   paints: paintsReducer,
@@ -18,5 +19,6 @@ export default combineReducers({
   errors: errorsReducer,
   process_running: processRunningReducer,
   beakers: beakersReducer,
-  modalsState: modalsOpenReducer
+  modalsState: modalsOpenReducer,
+  manual_work: manualWorkReducer
 })

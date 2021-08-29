@@ -7,7 +7,7 @@ const initialMixingTank: IMixingTank = {
   id: uuidv4(),
   current_volume: 0,
   current_volume_liters: 0,
-  capacity: 1000,
+  capacity: 5000,
   mixing_time_seconds: 0,
   mixing_time_seconds_remaining: 0,
   valve_open: false,

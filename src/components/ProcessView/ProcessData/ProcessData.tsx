@@ -7,6 +7,7 @@ import { setCleaningSubstanceRefilling } from '../../../store/actions/setCleanin
 import { setPaintsRefilling } from '../../../store/actions/setPaints'
 import { setProcessRunning } from '../../../store/actions/setProcessRunning'
 import { selectCleaningSubstance } from '../../../store/selectors/cleaningSubstanceSelectors'
+import { selectIsManualMode } from '../../../store/selectors/manualWorkSelectors'
 import { selectIsMixerWorking } from '../../../store/selectors/mixerWorkingSelectors'
 import { selectMixingTank, selectVolumeToGain } from '../../../store/selectors/mixingTankSelectors'
 import { selectPaints } from '../../../store/selectors/paintsSelectors'
@@ -22,6 +23,7 @@ const ProcessData = () => {
   const cleaningSubstance = useSelector(selectCleaningSubstance)
   const mixingTank = useSelector(selectMixingTank)
   const isMixerWorking = useSelector(selectIsMixerWorking)
+  const isManualWork = useSelector(selectIsManualMode)
 
   const [errors, setErrors] = useState<Array<string>>([])
 
@@ -83,12 +85,16 @@ const ProcessData = () => {
     if (isVolumeToGainNotSet) errorsNew.push('Nie określono ilości farby do osiągnięcia')
     if (isRefillingSomePaintTank) errorsNew.push('Nie można wystartować. Trwa uzupełnianie zbiornika z farbą')
     if (isRefillingCleaningSubstanceTank) errorsNew.push('Nie można wystartować. Trwa uzupełnianie substancji czyszczącej')
+    if (isManualWork) errorsNew.push('Nie można wystartować. Wybrano tryb pracy ręcznej')
 
     setErrors(errorsNew)
 
     if (errorsNew.length === 0) {
       // @ts-ignore
       tooltipRef.current?.hideTip()
+      // @ts-ignore
+      refillTooltipRef.current?.hideTip()
+
     }
   }, [
     cleaningSubstance.current_volume,
@@ -131,7 +137,7 @@ const ProcessData = () => {
       >Zatrzymaj proces</StopButton>
       <Tooltip
         ref={refillTooltipRef}
-        content={checkIfSomeTankRefilling() && 'Nie możesz użyć podczas uzupełniania zbiornika'}
+        content={checkIfSomeTankRefilling() ? 'Nie możesz użyć podczas uzupełniania zbiornika' : null}
         useDefaultStyles
         useHover={checkIfSomeTankRefilling()}
       >

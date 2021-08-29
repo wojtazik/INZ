@@ -8,6 +8,7 @@ import CleaningSubstanceTankData from "./CleaningSubstanceTankData";
 import MixingTankData from "./MixingTankData";
 import BeakersTankData from "./BeakersTankData";
 import ProcessData from "./ProcessData/ProcessData";
+import WorkType from "./WorkType";
 
 const ProcessView = () => {
   const paintsIds = useSelector(selectPaintsIds)
@@ -26,6 +27,7 @@ const ProcessView = () => {
       <CleaningSubstanceTankData />
       <MixingTankData />
       <ProcessData />
+      <WorkType />
     </TanksDataGridWrapper>
   )
 }

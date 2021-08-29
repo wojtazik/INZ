@@ -102,6 +102,11 @@ export interface ISetPaintsRefilling {
   type: string
 }
 
+export interface ISetManualWork {
+  type: string,
+  payload: boolean
+}
+
 export const SET_PAINTS = 'SET_PAINTS'
 export const SET_PAINT = 'SET_PAINT'
 export const SET_PAINT_VALVE_STATE = 'SET_PAINT_VALVE_STATE'
@@ -125,8 +130,9 @@ export const SET_PROCESS_RUNNING = 'SET_PROCESS_RUNNING'
 export const SET_PROCESS_RUNNING_SETTABLE = 'SET_PROCESS_RUNNING_SETTABLE'
 export const SET_PROCESS_RUNNING_INFO = 'SET_PROCESS_RUNNING_INFO'
 
-
 export const SET_BEAKERS = 'SET_BEAKERS'
 export const SET_BEAKERS_LEVEL = 'SET_BEAKERS_LEVEL'
 
 export const SET_COLORS_LIST_MODAL_OPEN = 'SET_COLORS_LIST_MODAL_OPEN'
+
+export const SET_MANUAL_WORK = 'SET_MANUAL_WORK'

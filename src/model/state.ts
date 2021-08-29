@@ -69,4 +69,5 @@ export interface IState {
   process_running: IProcessRunning
   beakers: IBeakers,
   modalsState: IModalsState
+  manual_work: boolean,
 }

@@ -129,7 +129,7 @@ const ColorPalette = () => {
   const renderColorsManagement = () => {
     return Object.keys(localColors).map((colorName: string) => {
       const colorObject = localColors[colorName]
-      console.log(processRunning)
+
       return (
         <ColorWrapper>
           <ColorName>{colorObject.name}</ColorName>

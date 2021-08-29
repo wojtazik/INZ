@@ -3,6 +3,7 @@ import { IPaint } from "../model/state";
 import { pushChoosenColorCode } from "../store/actions/setChoosenColorCode";
 import { pushCleaningSubstanceRefill, pushPartialCleaningSubstance, setCleaningSubstance } from "../store/actions/setCleaningSubstance";
 import { setErrors } from "../store/actions/setErrors";
+import { pushManualWork, setManualWork } from "../store/actions/setManualWork";
 import { pushMixerWorking } from "../store/actions/setMixerWorking";
 import { pushPartialMixingTank } from "../store/actions/setMixingTank";
 import { pushPaint, pushPaints, setPaint } from "../store/actions/setPaints";
@@ -35,6 +36,10 @@ function processData(dispatch: Dispatch<any>, data: any) {
 
         if (processData.errors && processData.errors.length) {
             dispatch(setErrors(processData.errors))
+        }
+
+        if (processData.manualWork !== undefined) {
+            dispatch(pushManualWork(processData.manualWork))
         }
 
     }

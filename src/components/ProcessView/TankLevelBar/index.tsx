@@ -98,7 +98,9 @@ const TankCurrentLevel = styled.div<
   }
 >`
   width: 100%;
-  background-image: linear-gradient(to right, ${colors.WHITE} 10%, #${({ colorCode }) => `${colorCode}`});
+  background-image: linear-gradient(to right, ${colors.WHITE} 10%, ${({ colorCode }) => `${
+    colorCode?.charAt(0) === '#' ? colorCode : '#' + colorCode
+  }`});
   height: ${({ currentHeight }) => `${(currentHeight as number)}%`};
   position: absolute;
   bottom: 0;
