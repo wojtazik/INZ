@@ -69,7 +69,7 @@ const MixingTankProcessView = () => {
           Zawór:
         </TankDataKey>
         <TankDataValue>
-          {mixingTank.valve_open ? 'Otwarty' : 'Zamknięty'}
+          {mixingTank.valve_open_read ? 'Otwarty' : 'Zamknięty'}
         </TankDataValue>
       </TankDataRow>
 

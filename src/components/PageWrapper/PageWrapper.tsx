@@ -1,10 +1,12 @@
 import styled from "styled-components"
 
-const PageWrapper = ({ children }: { children?: React.ReactNode }) => (
-  <PageWrapperStyled>
-    {children}
-  </PageWrapperStyled>
-)
+const PageWrapper = ({ children }: { children?: React.ReactNode }) => {
+  return (
+    <PageWrapperStyled>
+      {children}
+    </PageWrapperStyled>
+  )
+}
 
 
 const PageWrapperStyled = styled.div`

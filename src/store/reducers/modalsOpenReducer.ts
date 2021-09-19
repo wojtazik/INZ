@@ -1,8 +1,9 @@
 import { IModalsState } from "../../model/state"
-import { ISetModalOpen, SET_COLORS_LIST_MODAL_OPEN } from "../actions/actionType"
+import { ISetModalOpen, SET_COLORS_LIST_MODAL_OPEN, SET_COLOR_NAME_MODAL_OPEN } from "../actions/actionType"
 
 const initialState: IModalsState = {
-  colors_list_modal_open: false
+  colors_list_modal_open: false,
+  color_name_modal_open: false,
 }
 
 export const modalsOpenReducer = (state: IModalsState = initialState, action: ISetModalOpen): IModalsState => {
@@ -11,6 +12,11 @@ export const modalsOpenReducer = (state: IModalsState = initialState, action: IS
       return {
         ...state,
         colors_list_modal_open: action.payload
+      }
+    case SET_COLOR_NAME_MODAL_OPEN:
+      return {
+        ...state,
+        color_name_modal_open: action.payload,
       }
     default:
       return state

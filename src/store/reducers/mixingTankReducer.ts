@@ -11,6 +11,7 @@ const initialMixingTank: IMixingTank = {
   mixing_time_seconds: 0,
   mixing_time_seconds_remaining: 0,
   valve_open: false,
+  valve_open_read: false,
   volume_to_gain: 0
 }
 

@@ -34,7 +34,8 @@ export interface IMixingTank {
   current_volume: number,
   current_volume_liters: number,
   capacity: number,
-  valve_open: boolean
+  valve_open: boolean,
+  valve_open_read: boolean,
 }
 
 export interface IError {
@@ -52,6 +53,7 @@ export interface IBeakers {
 
 export interface IModalsState {
   colors_list_modal_open: boolean
+  color_name_modal_open: boolean,
 }
 
 export interface IProcessRunning {
@@ -64,6 +66,7 @@ export interface IState {
   mixer_working: boolean,
   cleaning_substance: ICleaningSubstance,
   choosen_color_code: string,
+  choosen_color_name: string,
   mixing_tank: IMixingTank
   errors: IError[],
   process_running: IProcessRunning

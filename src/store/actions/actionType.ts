@@ -40,6 +40,11 @@ export interface ISetChoosenColorCode {
   payload: string
 }
 
+export interface ISetChoosenColorName {
+  type: string,
+  payload: number
+}
+
 export interface ISetMixingTank {
   type: string,
   payload: Partial<IMixingTank>
@@ -122,6 +127,8 @@ export const SET_CLEANING_SUBSTANCE_VALVE_OPEN = 'SET_CLEANING_SUBSTANCE_VALVE_O
 export const SET_CLEANING_SUBSTANCE_REFILL = 'SET_CLEANING_SUBSTANCE_REFILL'
 
 export const SET_CHOOSEN_COLOR_CODE = 'SET_CHOOSEN_COLOR_CODE'
+export const SET_CHOOSEN_COLOR_NAME = 'SET_CHOOSEN_COLOR_NAME'
+
 export const SET_MIXING_TANK = 'SET_MIXING_TANK'
 export const SET_PARTIAL_MIXING_TANK = 'SET_PARTIAL_MIXING_TANK'
 
@@ -134,5 +141,6 @@ export const SET_BEAKERS = 'SET_BEAKERS'
 export const SET_BEAKERS_LEVEL = 'SET_BEAKERS_LEVEL'
 
 export const SET_COLORS_LIST_MODAL_OPEN = 'SET_COLORS_LIST_MODAL_OPEN'
+export const SET_COLOR_NAME_MODAL_OPEN = 'SET_COLOR_NAM_MODAL_OPEN'
 
 export const SET_MANUAL_WORK = 'SET_MANUAL_WORK'

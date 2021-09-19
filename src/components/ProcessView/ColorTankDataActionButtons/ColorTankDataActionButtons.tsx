@@ -6,6 +6,7 @@ import { useIO } from '../../../context/SocketContext'
 import { IState } from '../../../model/state'
 import { setPaintRefilling, setPaintValveState } from '../../../store/actions/setPaints'
 import { selectIsRefilling, selectIsValveOpen } from '../../../store/selectors/commonSelectors'
+import { selectIsManualMode } from '../../../store/selectors/manualWorkSelectors'
 import { selectIsMixerWorking } from '../../../store/selectors/mixerWorkingSelectors'
 import { selectPaintDataById } from '../../../store/selectors/paintsSelectors'
 import { selectIsProcessRunning } from '../../../store/selectors/processRunningSelectors'
@@ -23,6 +24,7 @@ const ColorTankDataActionButtons = ({ id }: IColorTankDataActionButtonsProps) =>
   const dispatch = useDispatch()
   const isProcessRunning = useSelector(selectIsProcessRunning).info
   const isMixerWorking = useSelector(selectIsMixerWorking)
+  const isManualMode = useSelector(selectIsManualMode)
   
   const valveTooltipRef = useRef<Tooltip>(null)
   const refillTooltipRef = useRef<Tooltip>(null)
@@ -46,7 +48,7 @@ const ColorTankDataActionButtons = ({ id }: IColorTankDataActionButtonsProps) =>
   }
 
   useEffect(() => {
-    if (!isProcessRunning && !isMixerWorking) {
+    if (!isProcessRunning && !isMixerWorking && isManualMode) {
       // @ts-ignore
       valveTooltipRef.current?.hideTip()
     }
@@ -61,14 +63,16 @@ const ColorTankDataActionButtons = ({ id }: IColorTankDataActionButtonsProps) =>
       <Tooltip
         ref={valveTooltipRef}
         content={
-          <TooltipContent>Nie możesz edytować trwajacego procesu</TooltipContent>  
+          <TooltipContent>
+            { isProcessRunning || isMixerWorking ? 'Nie możesz edytować trwajacego procesu' : 'Nie można otworzć zaworu ręcznie w trybie automatycznym' }
+          </TooltipContent>  
         }
-        useHover={isProcessRunning || isMixerWorking}
+        useHover={isProcessRunning || isMixerWorking || !isManualMode}
         useDefaultStyles
       >
         <Button 
-          onClick={!isProcessRunning ? onToggleValve : () => {}}
-          isDisabled={isProcessRunning || isMixerWorking}
+          onClick={!isProcessRunning && isManualMode ? onToggleValve : () => {}}
+          isDisabled={isProcessRunning || isMixerWorking || !isManualMode}
         >
           {valve_open ? 'Zamknij' : 'Otwórz'} Zawór
         </Button>

@@ -13,7 +13,7 @@ export const pushCleaningSubstanceValveOpen = (payload: boolean): ISetCleaningSu
 })
 
 export const setCleaningSubstanceValveOpen = (payload: boolean, socket: any) => (dispatch: Dispatch<ISetCleaningSubstanceRefill>) => {
-  socket.emit('change.cleaning_substance.valve_open')
+  socket.emit('change.cleaning_substance.valve_open', payload)
 }
 
 export const pushCleaningSubstanceRefill = (payload: boolean): ISetCleaningSubstanceRefill => ({

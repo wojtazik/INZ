@@ -15,7 +15,8 @@ import { selectIsProcessRunning } from '../../store/selectors/processRunningSele
 import { setPaints } from '../../store/actions/setPaints'
 import { setChoosenColorCode } from '../../store/actions/setChoosenColorCode'
 import { useIO } from '../../context/SocketContext'
-import { setColorsListModalOpen } from '../../store/actions/setModalsOpen'
+import { setColorNameModalOpen, setColorsListModalOpen } from '../../store/actions/setModalsOpen'
+import { setChoosenColorName } from '../../store/actions/setChoosenColorName'
 
 export type ColorKeyValue = {
   [key: string]: IPaint
@@ -105,6 +106,7 @@ const ColorPalette = () => {
     if (!processRunning.info) {
       dispatch(setPaints(Object.values(localColors), socket))
       dispatch(setChoosenColorCode(gainedColor, socket))
+      dispatch(setChoosenColorName(0, socket))
     }
   }
 

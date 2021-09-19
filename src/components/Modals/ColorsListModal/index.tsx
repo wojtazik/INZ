@@ -13,10 +13,12 @@ import { setPaints } from '../../../store/actions/setPaints'
 import Button from '../../common/SimpleButton/SimpleButton'
 import { selectChoosenColorCode } from '../../../store/selectors/choosenColorCodeSelectors'
 import { selectIsProcessRunning } from '../../../store/selectors/processRunningSelectors'
+import { setChoosenColorName } from '../../../store/actions/setChoosenColorName'
 
 type IExampleColor = {
   name: string,
   code: string,
+  id: number,
   counts: {
     [key: string]: number
   }
@@ -25,6 +27,7 @@ type IExampleColor = {
 const exampleColors: IExampleColor[] = [
   {
     name: 'Dirty pink',
+    id: 1,
     code: '#ff55aa',
     counts: {
       magenta: 2,
@@ -33,6 +36,7 @@ const exampleColors: IExampleColor[] = [
   },
   {
     name: 'Middle grey',
+    id: 2,
     code: '#808080',
     counts: {
       white: 1,
@@ -41,6 +45,7 @@ const exampleColors: IExampleColor[] = [
   },
   {
     name: 'Desert sand',
+    id: 3,
     code: '#ffffaa',
     counts: {
       yellow: 1,
@@ -49,6 +54,7 @@ const exampleColors: IExampleColor[] = [
   },
   {
     name: 'Fresh mint',
+    id: 4,
     code: '#80ff80',
     counts: {
       cyan: 1,
@@ -58,6 +64,7 @@ const exampleColors: IExampleColor[] = [
   {
     name: 'Sweet pink',
     code: '#ff40bf',
+    id: 5,
     counts: {
       magenta: 3,
       yellow: 1
@@ -66,6 +73,7 @@ const exampleColors: IExampleColor[] = [
   {
     name: 'Light purple',
     code: '#b649ff',
+    id: 6,
     counts: {
       cyan: 2,
       magenta: 3
@@ -74,6 +82,7 @@ const exampleColors: IExampleColor[] = [
   {
     name: 'Exotic sea',
     code: '#40bfff',
+    id: 7,
     counts: {
       cyan: 3,
       magenta: 1
@@ -82,6 +91,7 @@ const exampleColors: IExampleColor[] = [
   {
     name: 'Niggas black',
     code: '#40bfff',
+    id: 8,
     counts: {
       cyan: 3,
       magenta: 1,
@@ -114,9 +124,6 @@ const ColorsListModal = () => {
   }
 
   const onColorChoose = (color: IExampleColor) => {
-    dispatch(setChoosenColorCode(color.code, socket))
-    dispatch(pushChoosenColorCode(color.code))
-
     const { counts } = color
     const keys = Object.keys(counts)
 
@@ -135,6 +142,14 @@ const ColorsListModal = () => {
 
     dispatch(setPaints(newColors, socket))
     dispatch(setColorsListModalOpen(false))
+
+    setTimeout(() => {
+      dispatch(setChoosenColorCode(color.code, socket))
+    }, 200)
+
+    setTimeout(() => {
+      dispatch(setChoosenColorName(color.id, socket))
+    }, 400)
   }
 
   const renderExampleColorsList = () => exampleColors.map((exampleColor: IExampleColor, index) => (
