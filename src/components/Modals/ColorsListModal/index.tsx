@@ -127,10 +127,12 @@ const ColorsListModal = () => {
     const { counts } = color
     const keys = Object.keys(counts)
 
-    let newColors = paints.map((paint: IPaint) => ({
-      ...paint,
-      count: keys.includes(paint.name) ? color.counts[paint.name || 0] : paint.count
-    }))
+    let newColors = paints.map((paint: IPaint) => {
+      return ({
+        ...paint,
+        count: keys.includes(paint.name) ? color.counts[paint.name || 0] : 0
+      })
+    })
 
     const colorsSummaryCount = newColors.reduce((a, b) => a + (b['count'] || 0), 0)
 

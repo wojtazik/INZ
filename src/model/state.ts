@@ -23,7 +23,9 @@ export interface ICleaningSubstance {
   valve_open: boolean,
   max_level: boolean,
   min_level: boolean,
-  refill: boolean
+  refill: boolean,
+  cleaning_time: number,
+  cleaning_time_remaining: number
 }
 
 export interface IMixingTank {

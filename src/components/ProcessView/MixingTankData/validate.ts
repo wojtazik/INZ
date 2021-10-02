@@ -4,13 +4,15 @@ import { IMixingTank } from "../../../model/state"
 type IFunctionArgs = {
   localVolumeToGain: number,
   localMixingTime: number,
-  mixingTank: IMixingTank
+  mixingTank: IMixingTank,
+  localCleaningTime: number
 }
 
 const validate = ({
   localVolumeToGain,
   localMixingTime,
-  mixingTank
+  mixingTank,
+  localCleaningTime
 }: IFunctionArgs) => {
   const currentErrors: IInputError[] = []
 
@@ -31,6 +33,13 @@ const validate = ({
   if (localMixingTime < 30) {
     currentErrors.push({
       field: 'mixing_time',
+      message: 'Nie może być mniejsze od 30 sekund'
+    })
+  }
+
+  if (localCleaningTime < 30) {
+    currentErrors.push({
+      field: 'cleaning_time',
       message: 'Nie może być mniejsze od 30 sekund'
     })
   }

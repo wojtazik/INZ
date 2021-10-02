@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import styled, { css, keyframes } from 'styled-components'
 import { useIO } from '../../../context/SocketContext'
 import { setMixerWorking } from '../../../store/actions/setMixerWorking'
+import { selectCleaningSubstance } from '../../../store/selectors/cleaningSubstanceSelectors'
 import { selectMixerWorking } from '../../../store/selectors/commonSelectors'
 import { selectMixingTank } from '../../../store/selectors/mixingTankSelectors'
 import colors from '../../../styles/colors'
@@ -12,7 +13,7 @@ import { ReactComponent as MixerIcon } from './assets/motor.svg'
 const MixingTankProcessView = () => {
   const mixingTank = useSelector(selectMixingTank)
   const mixerWorking = useSelector(selectMixerWorking)
-
+  const cleaningTank = useSelector(selectCleaningSubstance)
   const ws = useIO()
   const dispatch = useDispatch()
 
@@ -66,6 +67,24 @@ const MixingTankProcessView = () => {
 
       <TankDataRow>
         <TankDataKey>
+          Ustawiony czas czyszczenia:
+        </TankDataKey>
+        <TankDataValue>
+          {cleaningTank.cleaning_time} s
+        </TankDataValue>
+      </TankDataRow>
+
+      <TankDataRow>
+        <TankDataKey>
+          Pozostały czas czyszczenia:
+        </TankDataKey>
+        <TankDataValue>
+          {cleaningTank.cleaning_time_remaining} s
+        </TankDataValue>
+      </TankDataRow>
+
+      <TankDataRow>
+        <TankDataKey>
           Zawór:
         </TankDataKey>
         <TankDataValue>
@@ -95,7 +114,7 @@ const TankDataRow = styled.div`
 const TankDataKey = styled.span<{bigTitle?: boolean}>`
   font-weight: 700;
   font-size: ${fonts.FONT_SMALL_SIZE};
-  min-width: 85%;
+  min-width: 100%;
   ${({ bigTitle }) => bigTitle && css`
     font-size: ${fonts.FONT_MEDIUM_SIZE};
     padding-bottom: 10px;

@@ -18,18 +18,22 @@ import { IPaint } from '../../../model/state'
 import { setPaints } from '../../../store/actions/setPaints'
 import { useIO } from '../../../context/SocketContext'
 import { selectIsMixerWorking } from '../../../store/selectors/mixerWorkingSelectors'
+import { selectCleaningSubstance } from '../../../store/selectors/cleaningSubstanceSelectors'
+import { setCleaningSubstanceTime } from '../../../store/actions/setCleaningSubstance'
 
 const MixingTankData = () => {
   const isProcessRunning = useSelector(selectIsProcessRunning).info
   const isMixerWorking = useSelector(selectIsMixerWorking)
   const mixingTank = useSelector(selectMixingTank)
+  const cleaningTank = useSelector(selectCleaningSubstance)
   const paints = useSelector(selectPaints)
 
   const [isEditMode, onSetIsEditMode] = useState(false)
   const [localVolumeToGain, onSetLocalVolumeToGain] = useState(mixingTank.volume_to_gain)
   const [errors, setErrors] = useState<IInputError[]>([])
   const [localMixingTime, onSetLocalMixingTime] = useState(mixingTank.mixing_time_seconds)
-  
+  const [localCleaningTime, onSetLocalCleaningTime] = useState(cleaningTank.cleaning_time)
+
   const tooltipRef = useRef<Tooltip>(null)
   
   const socket = useIO()
@@ -48,7 +52,8 @@ const MixingTankData = () => {
     const currentErrors = validate({
       localVolumeToGain,
       localMixingTime,
-      mixingTank
+      mixingTank,
+      localCleaningTime
     })
     
     setErrors(currentErrors)
@@ -73,6 +78,12 @@ const MixingTankData = () => {
       mixing_time_seconds: localMixingTime,
       volume_to_gain: localVolumeToGain
     }, socket))
+
+    dispatch(setCleaningSubstanceTime(
+      localCleaningTime,
+      socket
+    ))
+
     const newPaints = paints.map((paint: IPaint) => ({
       ...paint,
       count_liters: paint.ratio * localVolumeToGain
@@ -114,6 +125,16 @@ const MixingTankData = () => {
             name='mixing_tank_data_mixing_time'
             value={localMixingTime}
             onChange={(e) => onSetLocalMixingTime(parseInt(e.target.value))}
+          />
+          <span>S</span>
+        </Row>
+        <Label htmlFor='cleaning_time'>Czas czyszczenia</Label>
+        <Row>
+          <Input
+            type='number'
+            name='cleaning_time'
+            value={localCleaningTime}
+            onChange={(e) => onSetLocalCleaningTime(parseInt(e.target.value))}
           />
           <span>S</span>
         </Row>
