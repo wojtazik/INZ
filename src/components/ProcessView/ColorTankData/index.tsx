@@ -60,6 +60,7 @@ const ColorTankDataWrapper = styled.div`
   min-height: 200px;
   min-width: 310px;
   display: flex;
+  background: white;
   position: relative;
 `
 

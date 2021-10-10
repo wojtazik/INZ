@@ -3,9 +3,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import Tooltip from 'react-tooltip-lite'
 import styled from 'styled-components'
 import { useIO } from '../../../context/SocketContext'
-import { IState } from '../../../model/state'
+import { IError, IState } from '../../../model/state'
+import { setError } from '../../../store/actions/setErrors'
 import { setPaintRefilling, setPaintValveState } from '../../../store/actions/setPaints'
 import { selectIsRefilling, selectIsValveOpen } from '../../../store/selectors/commonSelectors'
+import { selectErrors } from '../../../store/selectors/errorsSelectors'
 import { selectIsManualMode } from '../../../store/selectors/manualWorkSelectors'
 import { selectIsMixerWorking } from '../../../store/selectors/mixerWorkingSelectors'
 import { selectPaintDataById } from '../../../store/selectors/paintsSelectors'
@@ -25,7 +27,8 @@ const ColorTankDataActionButtons = ({ id }: IColorTankDataActionButtonsProps) =>
   const isProcessRunning = useSelector(selectIsProcessRunning).info
   const isMixerWorking = useSelector(selectIsMixerWorking)
   const isManualMode = useSelector(selectIsManualMode)
-  
+  const errors = useSelector(selectErrors)
+
   const valveTooltipRef = useRef<Tooltip>(null)
   const refillTooltipRef = useRef<Tooltip>(null)
 
@@ -45,6 +48,33 @@ const ColorTankDataActionButtons = ({ id }: IColorTankDataActionButtonsProps) =>
       name: paint.name,
       refilling: !refill
     }, socket))
+  }
+
+  const onSetError = () => {
+    if (!isManualMode) {
+      const errorToUpdate: IError | undefined = errors.find((error) => {
+        console.log(error)
+        return error.location.includes(`VALVE_OPEN_AUTO_MODE_${paint.name.toUpperCase()}`)
+      })
+      if (errorToUpdate) {
+        dispatch(setError({
+          ...errorToUpdate,
+          last_active_date: new Date()
+        }))
+      }
+    }
+
+    if (isProcessRunning) {
+      const errorToUpdate: IError | undefined = errors.find((error) => error.location.includes(`OPEN_VALVE_WHEN_PROCESS_RUNNING_${paint.name.toUpperCase()}`))
+      if (errorToUpdate) {
+        dispatch(setError({
+          ...errorToUpdate,
+          last_active_date: new Date()
+        }))
+      }
+    }
+
+
   }
 
   useEffect(() => {
@@ -71,7 +101,7 @@ const ColorTankDataActionButtons = ({ id }: IColorTankDataActionButtonsProps) =>
         useDefaultStyles
       >
         <Button 
-          onClick={!isProcessRunning && isManualMode ? onToggleValve : () => {}}
+          onClick={!isProcessRunning && isManualMode ? onToggleValve : onSetError}
           isDisabled={isProcessRunning || isMixerWorking || !isManualMode}
         >
           {valve_open ? 'Zamknij' : 'Otwórz'} Zawór

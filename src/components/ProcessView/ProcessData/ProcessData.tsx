@@ -3,14 +3,17 @@ import { useDispatch, useSelector } from 'react-redux'
 import Tooltip from 'react-tooltip-lite'
 import styled, { css } from 'styled-components'
 import { useIO } from '../../../context/SocketContext'
+import { IError } from '../../../model/state'
 import { setCleaningSubstanceRefilling } from '../../../store/actions/setCleaningSubstance'
+import { setError } from '../../../store/actions/setErrors'
 import { setPaintsRefilling } from '../../../store/actions/setPaints'
 import { setProcessRunning } from '../../../store/actions/setProcessRunning'
 import { selectCleaningSubstance } from '../../../store/selectors/cleaningSubstanceSelectors'
+import { selectErrors } from '../../../store/selectors/errorsSelectors'
 import { selectIsManualMode } from '../../../store/selectors/manualWorkSelectors'
 import { selectIsMixerWorking } from '../../../store/selectors/mixerWorkingSelectors'
 import { selectMixingTank, selectVolumeToGain } from '../../../store/selectors/mixingTankSelectors'
-import { selectPaints } from '../../../store/selectors/paintsSelectors'
+import { selectIsPaintSelected, selectPaints } from '../../../store/selectors/paintsSelectors'
 import { selectIsProcessRunning } from '../../../store/selectors/processRunningSelectors'
 import colors from '../../../styles/colors'
 import fonts from '../../../styles/fonts'
@@ -24,6 +27,8 @@ const ProcessData = () => {
   const mixingTank = useSelector(selectMixingTank)
   const isMixerWorking = useSelector(selectIsMixerWorking)
   const isManualWork = useSelector(selectIsManualMode)
+  const isPaintSelected = useSelector(selectIsPaintSelected)
+  const stateErrors = useSelector(selectErrors)
 
   const [errors, setErrors] = useState<Array<string>>([])
 
@@ -63,6 +68,92 @@ const ProcessData = () => {
     return isRefillingSomePaintTank || isRefillingCleaningSubstanceTank
   }
 
+  const checkForErrors = () => {
+    paints.forEach((paint) => {
+      const paintVolumeError = stateErrors.find((stateError: IError) => {
+        return stateError.location === `VOLUME_${paint.name.toUpperCase()}` 
+      })
+
+      if (paint.current_volume_liters >= paint.count_liters && paintVolumeError?.is_active === true) {
+        if (paintVolumeError) {
+          dispatch(setError({
+            ...paintVolumeError,
+            is_active: false
+          }))
+        }
+      }
+
+      if (paint.current_volume_liters < paint.count_liters && paintVolumeError?.is_active === false) {
+        if (paintVolumeError) {
+          dispatch(setError({
+            ...paintVolumeError,
+            is_active: true,
+            last_active_date: new Date()
+          }))
+        }
+      }
+    }) 
+    const isRefillingSomePaintTank = paints.find((paint) => paint.refill === true)
+      const refilingPaintStateError = stateErrors.find((stateError: IError) => {
+        return stateError.location === 'START_WHEN_REFILLING_PAINT'
+      })
+      if (refilingPaintStateError) {
+        if (refilingPaintStateError.is_active && !isRefillingSomePaintTank) {
+          dispatch(setError({
+            ...refilingPaintStateError,
+            is_active: false
+          }))
+        }
+
+        if (isRefillingSomePaintTank && !refilingPaintStateError.is_active) {
+          dispatch(setError({
+            ...refilingPaintStateError,
+            is_active: true,
+            last_active_date: new Date()
+          }))
+        }
+      }
+
+      const processRunningError = stateErrors.find((stateError: IError) => {
+        return stateError.location === 'START_WHEN_PROCESS_RUNNING'
+      })
+
+      if (processRunningError) {
+        if (processRunning) {
+          dispatch(setError({
+            ...processRunningError,
+            last_active_date: new Date()
+          }))
+        }
+      }
+
+      const mixerWorkingError = stateErrors.find((stateError: IError) => {
+        return stateError.location === 'START_WHEN_MIXER_WORKING'
+      })
+
+      if (mixerWorkingError) {
+        if (isMixerWorking) {
+          dispatch(setError({
+            ...mixerWorkingError,
+            last_active_date: new Date()
+          }))
+        }
+      }
+
+      const isManualModeError = stateErrors.find((stateError: IError) => {
+        return stateError.location === 'START_WHEN_MANUAL_MODE'
+      })
+
+      if (isManualModeError) {
+        if (isManualWork) {
+          dispatch(setError({
+            ...isManualModeError,
+            last_active_date: new Date()
+          }))
+        }
+      }
+  }
+
   useEffect(() => {
     const anyValveAreOpen = paints.find((paint) => paint.valve_open === true)
     const anyPaintAreNotEnoughtLiters = paints.find((paint) => paint.current_volume_liters < paint.count_liters)
@@ -86,8 +177,10 @@ const ProcessData = () => {
     if (isRefillingSomePaintTank) errorsNew.push('Nie można wystartować. Trwa uzupełnianie zbiornika z farbą')
     if (isRefillingCleaningSubstanceTank) errorsNew.push('Nie można wystartować. Trwa uzupełnianie substancji czyszczącej')
     if (isManualWork) errorsNew.push('Nie można wystartować. Wybrano tryb pracy ręcznej')
+    if (!isPaintSelected) errorsNew.push('Nie wybrano produktu. Przejdź do ekranu drugiego, aby wybrać.')
 
     setErrors(errorsNew)
+    checkForErrors()
 
     if (errorsNew.length === 0) {
       // @ts-ignore

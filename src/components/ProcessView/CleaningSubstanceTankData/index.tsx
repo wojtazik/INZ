@@ -34,10 +34,10 @@ const MixingTankData = () => {
 
 const MixingTankDataWrapper = styled.div`
   box-shadow: 1px 1px 4px 2px rgba(0,0,0,0.5);
-  background: rgba(0, 50, 220, .05);
   border-radius: 5px;
   padding: 10px;
   min-height: 200px;
+  background: white;
   display: flex;
 `
 

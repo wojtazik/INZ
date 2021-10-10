@@ -7,27 +7,30 @@ import { ReactComponent as OkIcon } from './assets/check-mark.svg'
 import colors from '../../styles/colors'
 import { IError } from '../../model/state'
 
+
 const ControllerErrors = () => {
   const errors = useSelector(selectErrors)
 
   const listRef = useRef()
   const [fixedContentWidth, setFixedContentWidth] = useState(0)
 
-  const renderErrors = () => errors.map((error: IError) => (
-    <ErrorRow key={error.time + error.code}>
+  const renderErrors = () => errors.filter((error: IError) => {
+    return error.last_active_date
+  }).map((error: IError) => (
+    <ErrorRow key={Math.random()}>
       <ErrorCode>{error.code}</ErrorCode>
-      <ErrorTime>{error.time}</ErrorTime>
-      <ErrorMessage>{error.text}</ErrorMessage>
-      <ErrorLocation>{error.location}</ErrorLocation>
+      <ErrorTime>{error.last_active_date?.toLocaleString('en-US')}</ErrorTime>
+      <ErrorMessage>{error.message}</ErrorMessage>
+      <ErrorLocation>{error.is_active ? 'Aktywny' : 'Nieaktywny'}</ErrorLocation>
     </ErrorRow>  
   ))
 
   const renderHeader = (width: number) => (
     <ErrorRow key={0} fixed={true} fixedWidth={width}>
-      <ErrorCode>Kod błędu</ErrorCode>
+      <ErrorCode>Kod informacji</ErrorCode>
       <ErrorTime>Czas wyst.</ErrorTime>
-      <ErrorMessage>Komunikat błędu</ErrorMessage>
-      <ErrorLocation>Lokalizacja błędu</ErrorLocation>
+      <ErrorMessage>Komunikat</ErrorMessage>
+      <ErrorLocation>Status</ErrorLocation>
     </ErrorRow>  
   )
 
@@ -141,7 +144,7 @@ const ErrorCode = styled.div`
 `
 
 const ErrorTime = styled.div`
-  width: 150px;
+  width: 250px;
   border-right: 1px solid ${colors.GRAY_BASIC_DARK};
   display: flex;
   justify-content: center;

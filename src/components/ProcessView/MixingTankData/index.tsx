@@ -20,6 +20,7 @@ import { useIO } from '../../../context/SocketContext'
 import { selectIsMixerWorking } from '../../../store/selectors/mixerWorkingSelectors'
 import { selectCleaningSubstance } from '../../../store/selectors/cleaningSubstanceSelectors'
 import { setCleaningSubstanceTime } from '../../../store/actions/setCleaningSubstance'
+import { selectIsManualMode } from '../../../store/selectors/manualWorkSelectors'
 
 const MixingTankData = () => {
   const isProcessRunning = useSelector(selectIsProcessRunning).info
@@ -27,6 +28,7 @@ const MixingTankData = () => {
   const mixingTank = useSelector(selectMixingTank)
   const cleaningTank = useSelector(selectCleaningSubstance)
   const paints = useSelector(selectPaints)
+  const isManualMode = useSelector(selectIsManualMode)
 
   const [isEditMode, onSetIsEditMode] = useState(false)
   const [localVolumeToGain, onSetLocalVolumeToGain] = useState(mixingTank.volume_to_gain)
@@ -149,15 +151,21 @@ const MixingTankData = () => {
       <TooltippedButton position='first'>
         <Tooltip
           content={
-            <TooltipContent>Nie możesz edytować trwajacego procesu</TooltipContent>
+            <TooltipContent>
+              {isProcessRunning
+              ? 'Nie możesz edytować trwajacego procesu'
+              : !isManualMode
+              ? 'Nie można otworzyć w trybie automatycznym'
+              : ''}
+            </TooltipContent>
           }
-          useHover={isProcessRunning || isMixerWorking}
+          useHover={isProcessRunning || isMixerWorking || !isManualMode}
           useDefaultStyles
         >
           <div>
             <Button
-              onClick={!isProcessRunning && !isMixerWorking ? toggleValveOpen : () => {}}
-              isDisabled={isProcessRunning}
+              onClick={!isProcessRunning && !isMixerWorking && isManualMode ? toggleValveOpen : () => {}}
+              isDisabled={isProcessRunning && !isManualMode}
               id='toggle-mixing-tank-edit'
             >
               {mixingTank.valve_open ? 'Zamknij zawór' : 'Otwórz zawór'}
@@ -169,15 +177,27 @@ const MixingTankData = () => {
       <TooltippedButton>
         <Tooltip
           content={
-            <TooltipContent>Nie możesz edytować trwajacego procesu</TooltipContent>
+            <TooltipContent>
+              {isProcessRunning
+              ? 'Nie możesz edytować trwajacego procesu'
+              : isManualMode
+              ? 'Nie możesz edytować w trybie pracy ręcznej'
+              : ''
+              }
+            </TooltipContent>
           }
-          useHover={isProcessRunning || isMixerWorking}
+          useHover={isProcessRunning || isMixerWorking || isManualMode}
           useDefaultStyles
         >
           <div>
             <Button
-              onClick={!isProcessRunning && !isMixerWorking ? toggleIsEditMode : () => {}}
-              isDisabled={isProcessRunning}
+              onClick={
+                !isProcessRunning &&
+                !isMixerWorking &&
+                !isManualMode 
+                ? toggleIsEditMode 
+                : () => {}}
+              isDisabled={isProcessRunning || isManualMode}
               id='toggle-mixing-tank-edit'
             >
               Edytuj proces
@@ -204,6 +224,7 @@ const MixingTankWrapper = styled.div`
   min-width: 310px;
   display: flex;
   position: relative;
+  background: white;
 `
 
 const Row = styled.div`

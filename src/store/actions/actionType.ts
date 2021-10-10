@@ -60,6 +60,16 @@ export interface ISetErrors {
   payload: IError[]
 }
 
+export interface ISetError {
+  type: string,
+  payload: IError
+}
+
+export interface ISetEmergencyStop {
+  type: string,
+  payload: boolean
+}
+
 export interface ISetProcessRunning {
   type: string,
   payload: boolean
@@ -140,6 +150,9 @@ export const SET_MIXING_TANK = 'SET_MIXING_TANK'
 export const SET_PARTIAL_MIXING_TANK = 'SET_PARTIAL_MIXING_TANK'
 
 export const SET_ERRORS = 'SET_ERRORS'
+export const SET_ERROR = 'SET_ERROR'
+export const SET_MERGENCY_STOP = 'SET_EMERGENCY_STOP'
+
 export const SET_PROCESS_RUNNING = 'SET_PROCESS_RUNNING'
 export const SET_PROCESS_RUNNING_SETTABLE = 'SET_PROCESS_RUNNING_SETTABLE'
 export const SET_PROCESS_RUNNING_INFO = 'SET_PROCESS_RUNNING_INFO'
@@ -149,5 +162,6 @@ export const SET_BEAKERS_LEVEL = 'SET_BEAKERS_LEVEL'
 
 export const SET_COLORS_LIST_MODAL_OPEN = 'SET_COLORS_LIST_MODAL_OPEN'
 export const SET_COLOR_NAME_MODAL_OPEN = 'SET_COLOR_NAM_MODAL_OPEN'
+export const SET_TIME_INFO_MODAL_OPEN = 'SET_TIME_INFO_MODAL_OPEN'
 
 export const SET_MANUAL_WORK = 'SET_MANUAL_WORK'

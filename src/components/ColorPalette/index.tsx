@@ -15,8 +15,11 @@ import { selectIsProcessRunning } from '../../store/selectors/processRunningSele
 import { setPaints } from '../../store/actions/setPaints'
 import { setChoosenColorCode } from '../../store/actions/setChoosenColorCode'
 import { useIO } from '../../context/SocketContext'
-import { setColorNameModalOpen, setColorsListModalOpen } from '../../store/actions/setModalsOpen'
+import { setColorNameModalOpen, setColorsListModalOpen, setTimeInfoModalOpen } from '../../store/actions/setModalsOpen'
 import { setChoosenColorName } from '../../store/actions/setChoosenColorName'
+import { selectTimeInfoModalOpen } from '../../store/selectors/modalsSelectors'
+import TimeInfoModal from '../Modals/TimeInfoModal'
+import { selectIsManualMode } from '../../store/selectors/manualWorkSelectors'
 
 export type ColorKeyValue = {
   [key: string]: IPaint
@@ -27,6 +30,8 @@ const ColorPalette = () => {
   const choosenColor = useSelector(selectChoosenColorCode)
   const volumeToGain = useSelector(selectVolumeToGain)
   const processRunning = useSelector(selectIsProcessRunning)
+  const isTimeInfoModalOpen = useSelector(selectTimeInfoModalOpen)
+  const isManualMode = useSelector(selectIsManualMode)
 
   const [gainedColor, setGainedColor] = useState<string>(choosenColor)
   const [localColors, setLocalColors] = useState<ColorKeyValue>(colors.reduce((acc: ColorKeyValue, color: IPaint) => (
@@ -103,10 +108,11 @@ const ColorPalette = () => {
   }
 
   const onSaveConfiguration = () => {
-    if (!processRunning.info) {
+    if (!processRunning.info && !isManualMode) {
       dispatch(setPaints(Object.values(localColors), socket))
       dispatch(setChoosenColorCode(gainedColor, socket))
       dispatch(setChoosenColorName(0, socket))
+      dispatch(setTimeInfoModalOpen(true))
     }
   }
 
@@ -155,11 +161,24 @@ const ColorPalette = () => {
         Aby dostosować wymagany kolor, naciśnij dodaj lub usuń przy poszczególnych kolorach bazowych.
         Każde dodanie zwiększa udział koloru bazowego o jedną jednostkę, która jest abstrakcyjną wartością,
         opisującą procentowy udział koloru w barwie wynikowej. Aby ustawić wymagany litraż, przejdź do pierwszej zakładki.
+        <br />
+        Nie można wybierać koloru podczas trwającego procesu, oraz w trybie ręcznym.
       </ComponentWrapperHint>
       <ColorPaletteWrapper>
-        <SaveButton isDisabled={processRunning.info} onClick={onSaveConfiguration}>Zapisz</SaveButton>
+        <SaveButton
+          isDisabled={processRunning.info || isManualMode}
+          onClick={onSaveConfiguration}
+        >
+          Zapisz
+        </SaveButton>
         <GainedColor colorCode={gainedColor} isBright={isBright()} onClick={onOpenColorsListModal}>
           <GainedColorCode isDark={isDark()}>
+            { isTimeInfoModalOpen && (
+              <TimeInfoModal
+                info={'Zapisano wybór'}
+                timeout={2000}
+              />
+            )}
             {gainedColor || 'Nie wybrano'}
           </GainedColorCode>
         </GainedColor>
@@ -210,10 +229,11 @@ const GainedColor = styled.div<GainedColorProps>`
   border-radius: 50%;
   margin-left: auto;
   margin-right: auto;
+  box-shadow: 1px 1px 4px 2px rgba(0,0,0,0.5);
   position: relative;
   cursor: pointer;
   border: 1px solid transparent;
-  background: ${({ colorCode }) => colorCode};
+  background: ${({ colorCode }) => colorCode || '#FFF'};
   ${({ isBright }) => isBright && css`
     border: 1px solid ${colors.GRAY_BASIC_DARK}
   `}
@@ -245,6 +265,11 @@ const ColorsManagement = styled.div`
 `
 
 const ColorWrapper = styled.div`
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 1px 1px 4px 2px rgba(0,0,0,0.5);
+
   flex: 1;
   &:not(:last-of-type) {
     margin-right: 20px;

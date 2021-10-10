@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import styled, { css } from 'styled-components'
-import { setColorsListModalOpen } from '../../../store/actions/setModalsOpen'
+import { setColorsListModalOpen, setTimeInfoModalOpen } from '../../../store/actions/setModalsOpen'
 import colors from '../../../styles/colors'
 import Expand from 'react-expand-animated'
 import { pushChoosenColorCode, setChoosenColorCode } from '../../../store/actions/setChoosenColorCode'
@@ -14,6 +14,7 @@ import Button from '../../common/SimpleButton/SimpleButton'
 import { selectChoosenColorCode } from '../../../store/selectors/choosenColorCodeSelectors'
 import { selectIsProcessRunning } from '../../../store/selectors/processRunningSelectors'
 import { setChoosenColorName } from '../../../store/actions/setChoosenColorName'
+import { selectIsManualMode } from '../../../store/selectors/manualWorkSelectors'
 
 type IExampleColor = {
   name: string,
@@ -108,8 +109,8 @@ const ColorsListModal = () => {
   const socket = useIO()
   const paints = useSelector(selectPaints)
   const volumeToGain = useSelector(selectVolumeToGain)
-  const colorToGain = useSelector(selectChoosenColorCode)
   const processRunning = useSelector(selectIsProcessRunning)
+  const isManualMode = useSelector(selectIsManualMode)
 
   const onClickExit = (e: React.MouseEvent) => {
     dispatch(setColorsListModalOpen(false))
@@ -144,6 +145,7 @@ const ColorsListModal = () => {
 
     dispatch(setPaints(newColors, socket))
     dispatch(setColorsListModalOpen(false))
+    dispatch(setTimeInfoModalOpen(true))
 
     setTimeout(() => {
       dispatch(setChoosenColorCode(color.code, socket))
@@ -174,7 +176,12 @@ const ColorsListModal = () => {
           {Object.keys(exampleColor.counts).map((key: string) => (
             <ChunkColorCount>{key}: {exampleColor.counts[key]}</ChunkColorCount>
           ))}
-          <ChooseColorButton isRunning={processRunning.info} onClick={!processRunning.info ? () => onColorChoose(exampleColor) : undefined}>
+          <ChooseColorButton
+            isRunning={processRunning.info || isManualMode}
+            onClick={!processRunning.info && !isManualMode 
+              ? () => onColorChoose(exampleColor)
+              : undefined}
+          >
             Wybierz
           </ChooseColorButton>
         </ExpandedColorData>

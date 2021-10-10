@@ -25,10 +25,15 @@ const selectPaints = (state: IState) => {
   return state.paints
 }
 
+const selectIsPaintSelected = (state: IState) => {
+  return state.paints.some((paint: IPaint) => paint.count > 0)
+}
+
 export {
   selectPaintTanksCount,
   selectPaintsColorCodes,
   selectPaintsIds,
   selectPaintDataById,
-  selectPaints
+  selectPaints,
+  selectIsPaintSelected
 }

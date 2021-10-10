@@ -40,13 +40,6 @@ export interface IMixingTank {
   valve_open_read: boolean,
 }
 
-export interface IError {
-  text: string,
-  location: string,
-  code: number,
-  time: string
-}
-
 export interface IBeakers {
   capacity: number,
   current_volume: number
@@ -56,11 +49,20 @@ export interface IBeakers {
 export interface IModalsState {
   colors_list_modal_open: boolean
   color_name_modal_open: boolean,
+  time_info_modal_open: boolean
 }
 
 export interface IProcessRunning {
   settable: boolean
   info: boolean
+}
+
+export interface IError {
+  is_active: boolean,
+  message: string,
+  last_active_date: Date | null,
+  code: number,
+  location: string
 }
 
 export interface IState {

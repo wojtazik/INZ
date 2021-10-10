@@ -2,7 +2,7 @@ import { Dispatch } from "react";
 import { IPaint } from "../model/state";
 import { pushChoosenColorCode } from "../store/actions/setChoosenColorCode";
 import { pushCleaningSubstanceRefill, pushPartialCleaningSubstance, setCleaningSubstance } from "../store/actions/setCleaningSubstance";
-import { setErrors } from "../store/actions/setErrors";
+import { setEmergencyStop, setErrors } from "../store/actions/setErrors";
 import { pushManualWork, setManualWork } from "../store/actions/setManualWork";
 import { pushMixerWorking } from "../store/actions/setMixerWorking";
 import { pushPartialMixingTank } from "../store/actions/setMixingTank";
@@ -34,8 +34,8 @@ function processData(dispatch: Dispatch<any>, data: any) {
             })
         }
 
-        if (processData.errors && processData.errors.length) {
-            dispatch(setErrors(processData.errors))
+        if (processData.emergency_stop !== undefined) {
+            dispatch(setEmergencyStop(processData.emergency_stop))
         }
 
         if (processData.manualWork !== undefined) {
