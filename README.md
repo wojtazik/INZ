@@ -2,6 +2,21 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+You have to install Node.js environment in min. 12.X version with Node Package Manager ( it is installed automatically when you install Node.js).
+After install node.js you can check version of installed environment using command 
+### `node -v`
+
+You can also switch between node.js versions. Just type `nvm use [version]` into console. If you want to install other version, you can do it using command `nvm install [version]`
+
+
+First, install dependencies using command:
+
+### `yarn`
+or better 
+### `npm install`
+
+It will takes a few moments. Later you can run application using scripts:
+
 ## Available Scripts
 
 In the project directory, you can run:
