@@ -1,3 +1,21 @@
+# About project
+This is the frontend part of engineering thesis created for a diploma at a Poznan University of Technology.
+Thesis thema is "Simulation of a part of production process using PLC controller and web application".
+
+Project is splitted into two parts. Here you can explore frontend part of project. You can also find backend part https://github.com/wojtazik/INZ-backend
+
+## Used technologies (main):
+ - React
+ - Redux
+ - Typescript
+ - Redux middlewares (thunk)
+ - Node.js
+ - Express
+ - Create-react-app
+ - Socket.io
+
+This project works with a process created in the PLC Siemens S1200. You can explore whole files in the project, but it won't work without PLC.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
